@@ -1,0 +1,159 @@
+:root {
+	--bg: #40505D;
+	--bg-dark: rgba(0, 0, 0, 0.33);
+
+	--fg: #C2DDF3;
+	--fg-accent: #40D87D;
+	--fg-highlight: #FFF;
+
+	--border-radius: 3px;
+}
+
+html {
+	font-size: 22px;
+	height: 100%;
+}
+body {
+	background: var(--bg);
+	color: var(--fg);
+	font-family: 'Noto Sans', sans-serif;
+	height: 100%;
+	line-height: 1.5;
+}
+a {
+	color: var(--fg-accent);
+	text-decoration: none;
+}
+a:hover, a:focus, a:active {
+	color: var(--fg-highlight);
+}
+h1 {
+	background: var(--bg-dark);
+	border-radius: var(--border-radius);
+	box-shadow: 1rem 0 0 var(--bg-dark),
+			   -1rem 0 0 var(--bg-dark);
+	font-size: 1.5em;
+	margin: 1rem 0;
+	padding: 0.25rem 0;
+}
+h2 {
+	display: inline;
+	font-size: 1em;
+	margin: 0;
+}
+p {
+	display: inline;
+	font-size: 80%;
+	font-style: italic;
+	margin: 0 0 0 0.5rem;
+}
+.dl-list {
+	list-style: none;
+	margin-top: 0;
+	margin-bottom: 0;
+	text-align: right;
+}
+.dl-list li {
+	display: inline;
+}
+.dl-list a {
+	background-position: 50% 55%;
+	background-repeat: no-repeat;
+	background-size: 16px 16px;
+	border-radius: 50%;
+	display: inline-block;
+	box-sizing: border-box;
+	overflow-x: hidden;
+	text-indent: 1.5em;
+	white-space: nowrap;
+	width: 1.5em;
+}
+.dl-list a:hover,
+.dl-list a:focus,
+.dl-list a:active {
+	background-color: var(--fg);
+}
+.dl-kat {
+	background-image: url('../img/kat.png');
+}
+.dl-rar {
+	background-image: url('../img/rarbg.png');
+}
+.dl-tvm {
+	background-image: url('../img/tvmaze.png');
+}
+.dl-tz {
+	background-image: url('../img/torrentz.png');
+}
+
+/*
+ *	Animated loading dots
+ */
+.loading-dots {
+    background-color: var(--bg-dark);
+    border-radius: 5px;
+    box-shadow: inset 0 1px 0 rgba(0,0,0,0.3),
+    	0 1px 0 rgba(255,255,255,0.3);
+	font-size: 1em; /* set dot size here */
+    line-height: 1;
+    margin: 4em auto;
+    padding: 0.25em;
+    text-align: center;
+    width: 3.6em;
+}
+.loading-dots span {
+    animation: loading-dots 0.8s linear infinite;
+    background: transparent;
+    border-radius: 50%;
+    box-shadow: inset 0 0 1px rgba(0,0,0,0.3);
+    display: inline-block;
+    margin-left: 0.4em;
+    height: 0.6em;
+    width:  0.6em;
+}
+.loading-dots span:nth-child(1) {
+	margin-left: 0;
+}
+.loading-dots span:nth-child(2) {
+	animation-delay: 0.2s;
+}
+.loading-dots span:nth-child(3) {
+	animation-delay: 0.4s;
+}
+@keyframes loading-dots {
+	0% {
+	  background: transparent;
+	}
+	50% {
+	  background: #E4E4E4;
+	}
+	100% {
+	  background: transparent;
+	}
+}
+
+/*
+ *	Layout
+ */
+#header,
+#footer {
+	background: var(--bg-dark);
+	flex: none;
+}
+#content {
+	flex: 1 0 auto;
+	margin: 0 auto;
+	max-width: 40em;
+	padding: 2em;
+}
+
+/*
+ *	Overrides for flexboxgrid
+ */
+.center-xs > *,
+.center-sm > *,
+.center-md > *,
+.center-lg > * {
+	text-align: initial;
+}
+

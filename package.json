@@ -1,0 +1,25 @@
+{
+  "name": "tvlist",
+  "version": "0.1.0",
+  "description": "List of TV shows",
+  "author": "Phanx <phanx@protonmail.ch>",
+  "license": "Zlib",
+  "private": true,
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^4.13.3"
+  },
+  "devDependencies": {
+    "autoprefixer": "^6.2.3",
+    "babel-preset-react": "^6.3.13",
+    "bower": "^1.7.2",
+    "csswring": "^4.1.1",
+    "gulp": "^3.9.0",
+    "gulp-babel": "^6.1.1",
+    "gulp-postcss": "^6.0.1",
+    "postcss-cssnext": "^2.4.0"
+  }
+}

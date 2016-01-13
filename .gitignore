@@ -1,0 +1,37 @@
+# Windows
+Desktop.ini
+ethumbs.db
+Thumbs.db
+$RECYCLE.BIN/
+*.lnk
+
+# Linux
+*~
+.directory
+.fuse_hidden*
+.Trash-*
+
+# OSX
+._*
+.apdisk
+.AppleDB
+.AppleDesktop
+.AppleDouble
+.DocumentRevisions-V100
+.DS_Store
+.fseventsd
+.LSOverride
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+
+# Miscellaneous
+*.bak
+*.log
+*.tmp
+
+# Dependencies
+bower_components
+node_modules
+

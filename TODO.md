@@ -1,17 +1,12 @@
 # TODO
 
-- Move next airdate detection into main routine.
+- Show days to next episode? Hide next episode if more
+  than 30 days away?
 
-- Prune unused data?
+- Move next airdate detection into main routine so
+  it only has to be calculated once.
 
-- Split up data by day and pass it to a new element
-  <ShowGroup name={dayName}> which then fills itself
-  with <Show data={show}> elements.
+- Prune unused parts from fetched data?
 
-- Implement collapsible <ShowGroup> when clicking
-  on its header. Separate <ShowGroupHeader> element?
-
-- Some kind of persistent storage, eg. in a JSON file,
-  of basic data like title and last known airday, so
-  the <ShowList> can be shown right away, and each
-  <Show> can fetch its own JSON and update itself.
+- Maybe: Store all the data, keep track of the last
+  fetched date, and refresh every 24 hours.

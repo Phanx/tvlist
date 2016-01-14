@@ -1,85 +1,109 @@
 var gulp = require('gulp')
 // var concat = require('gulp-concat')
-// TODO: add the stream merge thingy
+var runSequence = require('run-sequence')
 
-// CSS
-var postcss      = require('gulp-postcss')
+// CSS things
+var postcss		 = require('gulp-postcss')
 var autoprefixer = require('autoprefixer')
-// var cssnext      = require('postcss-cssnext')
-var csswring     = require('csswring')
+// var cssnext		= require('postcss-cssnext')
+var csswring	  = require('csswring')
 
-// JavaScript
+// JavaScript things
 var babel = require('gulp-babel')
 
+// Halp
 gulp.task('default', function () {
-   console.log('Ribbit!')
+	console.log('Available tasks:')
+	console.log('   build - Clean up, copy components, and build from source files')
+	console.log('   clean - Remove files from past build runs')
+	console.log('   copy  - Copy components into the app for use')
+	console.log('   watch - Watch and rebuild on source file changes')
 })
 
+//  ===================================================== \\
+//  	clean
+//  ===================================================== //
 
+gulp.task('clean', function(done) {
+	require('del')([
+		'app/css',
+		'app/js'
+	]).then(function() {
+		done()
+	})
+})
 
-gulp.task('build', [
-   'copy',
-   'build:css',
-   'build:js'
+//  ===================================================== \\
+//  	copy
+//  ===================================================== //
+
+gulp.task('copy', [
+	'copy-css',
+	'copy-js'
 ])
 
-gulp.task('build:css', function() {
-   return gulp.src('src/css/**/*.css')
-      .pipe(postcss([
-         autoprefixer({ browsers: ['last 2 versions'] }),
-         // cssnext,
-         csswring
-      ]))
-      .pipe(gulp.dest('app/css'))
+gulp.task('copy-css', function() {
+	return gulp.src([
+		'node_modules/normalize.css/normalize.css',
+		'node_modules/flexboxgrid/dist/flexboxgrid.min.css'
+	])
+	// TODO: minify and concatenate
+	.pipe(gulp.dest('app/css'))
 })
 
-gulp.task('build:js', function() {
+gulp.task('copy-js', function() {
+	return gulp.src([
+		'node_modules/jquery/dist/jquery.min.js',
+		// TODO: use minified react for production
+		'node_modules/react/dist/react.js',
+		'node_modules/react-dom/dist/react-dom.js'
+	])
+	// TODO: concatenate
+	.pipe(gulp.dest('app/js'))
+})
+
+//  ===================================================== \\
+//		build
+//  ===================================================== //
+
+gulp.task('build', function(done) {
+	runSequence(
+		'clean',
+		['copy', 'build-css', 'build-js'],
+	done)
+})
+
+gulp.task('build-css', function(done) {
+	return gulp.src('src/css/**/*.css')
+		.pipe(postcss([
+			autoprefixer({ browsers: ['last 2 versions'] }),
+			// cssnext,
+			csswring
+		]))
+		// .pipe(concat('all.css'))
+		.pipe(gulp.dest('app/css'))
+})
+
+gulp.task('build-js', function() {
 	return gulp.src('src/js/**/*.js')
 		.pipe(babel({ presets: ['react'] }))
 		// .pipe(concat('all.js'))
 		.pipe(gulp.dest('app/js'))
 })
 
-
-
-gulp.task('copy', [
-   // Copy Bower components
-	'copy:css',
-	'copy:js'
-])
-
-gulp.task('copy:css', function() {
-   // Copy CSS files from Bower components
-   return gulp.src([
-      'bower_components/flexboxgrid/css/flexboxgrid.min.css',
-      'bower_components/normalize-css/normalize.css'
-   ])
-   // TODO: minimize things
-   .pipe(gulp.dest('app/css/vnd'))
-})
-
-gulp.task('copy:js', function() {
-   // Copy JS files from Bower components
-   return gulp.src([
-      'bower_components/jquery/dist/jquery.min.js',
-      'bower_components/react/react.min.js',
-      'bower_components/react/react-dom.min.js'
-   ])
-   .pipe(gulp.dest('app/js/vnd'))
-})
-
-
+//  ===================================================== \\
+//		watch
+//  ===================================================== //
 
 gulp.task('watch', [
-   'watch:css',
-   'watch:js'
+	'watch-css',
+	'watch-js'
 ])
 
-gulp.task('watch:css', function() {
-   return gulp.watch('src/css/**/*.css', ['build:css'])
+gulp.task('watch-css', function() {
+	return gulp.watch('src/css/**/*.css', ['build-css'])
 })
 
-gulp.task('watch:js', function() {
-	return gulp.watch('src/js/**/*.js', ['build:js'])
+gulp.task('watch-js', function() {
+	return gulp.watch('src/js/**/*.js', ['build-js'])
 })
-

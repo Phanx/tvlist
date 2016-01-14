@@ -2,6 +2,14 @@
 
 * `node server.js` starts the server
 
-* `gulp copy` copies Bower components
-* `gulp build` copies Bower components and processes custom CSS/JS from `src` into `app`
-* `gulp watch` watches custom CSS/JS and processes it into `src` when it changes
+* `gulp build` copies third-party files and compiles/processes source files into the app
+* `gulp watch` watches source files and compiles/processes them when they change
+
+## Other commands:
+
+* `gulp clean` removes previously copied and compiled files (included in `gulp build`)
+* `gulp copy` copies third-party files into the app (included in `gulp build`)
+
+## Installation commands:
+
+`node install`

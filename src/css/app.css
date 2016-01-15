@@ -15,7 +15,7 @@ html {
 body {
 	background: var(--bg);
 	color: var(--fg);
-	font-family: Anaheim, Noto Sans, sans-serif;
+	font-family: Asap, sans-serif;
 	height: 100%;
 	line-height: 1.5;
 }

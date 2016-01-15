@@ -1,17 +1,23 @@
-# Windows
+# Dependency directories
+bower_components
+node_modules
+
+# Build output directories
+app/css
+app/js
+
+# Miscellaneous files
+*.bak
+*.log
+*.tmp
+
+# Windows files
 Desktop.ini
 ethumbs.db
 Thumbs.db
-$RECYCLE.BIN/
 *.lnk
 
-# Linux
-*~
-.directory
-.fuse_hidden*
-.Trash-*
-
-# OSX
+# OSX files
 ._*
 .apdisk
 .AppleDB
@@ -25,13 +31,3 @@ $RECYCLE.BIN/
 .TemporaryItems
 .Trashes
 .VolumeIcon.icns
-
-# Miscellaneous
-*.bak
-*.log
-*.tmp
-
-# Dependencies
-bower_components
-node_modules
-

@@ -10,3 +10,7 @@
 
 - Maybe: Store all the data, keep track of the last
   fetched date, and refresh every 24 hours.
+
+## Build process
+
+- Fix the package.json/scripts/build command?

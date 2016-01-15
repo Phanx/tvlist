@@ -1,3 +1,7 @@
+var $ = require("jquery")
+var React = require("react")
+var ReactDOM = require("react-dom")
+
 var LoadingDots = React.createClass({
 	render: function() {
 		return (
@@ -18,11 +22,11 @@ var Show = React.createClass({
 		if (nextEpisode) {
 			show._embedded.episodes.forEach(function(episode) {
 				if (!statusText && episode.id === nextEpisode) {
-/*
+
 					var airdate = new Date(episode.airdate)
 					var today = new Date()
 					var days = Math.floor((airdate - today) / (1000 * 60 * 60 * 24))
-*/
+
 					statusText = "Next: " + episode.airdate
 				}
 			})
@@ -168,3 +172,11 @@ ReactDOM.render(
 	<LoadingDots />,
 	document.getElementById("content")
 )
+
+module.exports = {
+	ShowList,
+	ShowGroup,
+	Show,
+	LoadingDots
+}
+

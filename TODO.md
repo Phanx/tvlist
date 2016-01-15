@@ -2,6 +2,15 @@
 
 - Display "Starts" instead of "Returns" for new shows.
 
+- Prefer names as written in shows.json.
+
+- Use IDs in shows.json to construct IMDB and KAT links.
+
+- Add epguides.com links.
+
+- Use reponsive classes to hide info-only links if the
+  screen is too small to fit them all.
+
 - Move next airdate detection into main routine so
   it only has to be calculated once.
 
@@ -21,11 +30,11 @@
     - Hide day sections with no shows? Or fade them
       out so it's obvious they're not clickable.
 
+- Move fetching into the server API
+
 - Use React animation instead of jQuery?
 
 - Prune unused parts from fetched data?
-
-- Find direct link to show on KAT.
 
 ## Build process
 

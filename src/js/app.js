@@ -46,7 +46,7 @@ var Show = React.createClass({
 		statusText = (statusText.length > 1) ? (<p>{statusText}</p>) : ""
 
 		var classList      = statusText ? "show row afk" : "show row"
-		var showNameForURL = encodeURIComponent(show.name.replace(/[^\w\s]/g, ""))
+		var showNameForURL = encodeURIComponent(show.name.replace(/[^\w\s]/g, " ").replace(/\s\s+/g, " "))
 		return (
 			<article className={classList}>
 				<div className="col-xs-12 col-sm-8">
@@ -56,7 +56,7 @@ var Show = React.createClass({
 				<div className="col-xs-12 col-sm-4">
 					<ul className="dl-list">
 						<li><a className="dl-tvm" href={show.url}>TVMaze</a></li>
-						<li><a className="dl-kat" href={"https://kat.cr/usearch/?q=" + showNameForURL + "&field=time_add&sorder=desc"}>KAT</a></li>
+						<li><a className="dl-kat" href={"https://kat.cr/usearch/?q=" + showNameForURL + "%20category:tv&field=time_add&sorder=desc"}>KAT</a></li>
 						<li><a className="dl-rar" href={"https://rarbg.to/torrents.php?search=" + showNameForURL}>RARBG</a></li>
 						<li><a className="dl-tz"  href={"https://torrentz.eu/searchA?f=" + showNameForURL}>Torrentz</a></li>
 					</ul>
@@ -132,9 +132,9 @@ $.getJSON("/api/shows", function(SHOWS) {
 		data.push({ name: day, shows: [] })
 	})
 
-	SHOWS.forEach(function(showName) {
-		var URL = "http://api.tvmaze.com/singlesearch/shows?q=" + encodeURIComponent(showName.toLowerCase()) + "&embed=episodes"
-		console.log("Fetching data for show: " + showName + " @ " + URL)
+	SHOWS.forEach(function(show) {
+		var URL = "http://api.tvmaze.com/singlesearch/shows?q=" + encodeURIComponent(show.name.toLowerCase()) + "&embed=episodes"
+		console.log("Fetching data for show: " + show.name + " @ " + URL)
 
 		$.getJSON(URL, function(show) {
 			numFetched++

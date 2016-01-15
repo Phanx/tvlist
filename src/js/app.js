@@ -22,19 +22,18 @@ var Show = React.createClass({
 		if (nextEpisode) {
 			show._embedded.episodes.forEach(function(episode) {
 				if (!statusText && episode.id === nextEpisode) {
-
 					var airdate = new Date(episode.airdate)
 					var today = new Date()
-					var days = Math.floor((airdate - today) / (1000 * 60 * 60 * 24))
-
-					statusText = "Next: " + episode.airdate
+					var daysToNext = Math.floor((airdate - today) / (1000 * 60 * 60 * 24))
+					console.log(show.name + " daysToNext " + daysToNext)
+					statusText = (daysToNext >= 7 ? ("Returns " + episode.airdate) : " ")
 				}
 			})
 		}
-		statusText = statusText || (show.status === "Running" ? "On Break" : show.status)
+		statusText = statusText || (show.status === "Running" ? "Break" : show.status)
 
 		var style = (statusText == "Ended") ? { display: "none" }
-			: (statusText == "On Break") ? { opacity: "0.5" }
+			: (statusText.length > 1) ? { opacity: "0.5" }
 			: null
 
 		var showNameForURL = encodeURIComponent(show.name.replace(/[^\w\s]/g, ""))

@@ -1,6 +1,7 @@
 :root {
 	--bg: #40505D;
 	--bg-dark: rgba(0, 0, 0, 0.33);
+	--bg-med: rgba(0, 0, 0, 0.16);
 
 	--fg: #C2DDF3;
 	--fg-accent: #40D87D;
@@ -29,6 +30,7 @@ a:hover, a:focus, a:active {
 h1 {
 	background: var(--bg-dark);
 	border-radius: var(--border-radius);
+	cursor: pointer;
 	font-size: 1.5em;
 	margin: 1rem -1rem;
 	padding: 0.25rem 1rem;
@@ -44,6 +46,18 @@ p {
 	font-size: 80%;
 	font-style: italic;
 	margin: 0 0 0 0.5rem;
+}
+p::before {
+	content: "\2014";
+	padding-right: 0.5rem;
+}
+.show:hover {
+	background: var(--bg-med);
+	border-radius: var(--border-radius);
+	box-shadow: 0 -0.4em 0 var(--bg-med);
+}
+.afk {
+	opacity: 0.6;
 }
 .dl-list {
 	list-style: none;

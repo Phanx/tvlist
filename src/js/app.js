@@ -14,6 +14,7 @@ var LoadingDots = React.createClass({
 	}
 })
 
+var MONTH_NAMES = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
 var Show = React.createClass({
 	render: function() {
 		var show = this.props.show
@@ -22,32 +23,35 @@ var Show = React.createClass({
 		if (nextEpisode) {
 			show._embedded.episodes.forEach(function(episode) {
 				if (!statusText && episode.id === nextEpisode) {
-					var airdate = new Date(episode.airdate)
-					var today = new Date()
+					var today      = new Date()
+					var airdate    = new Date(episode.airdate)
 					var daysToNext = Math.floor((airdate - today) / (1000 * 60 * 60 * 24))
-					console.log(show.name + " daysToNext " + daysToNext)
-					statusText = (daysToNext >= 7 ? ("Returns " + episode.airdate) : " ")
+
+					if (daysToNext < 7) {
+						statusText = " "
+					}
+					else {
+						statusText = "Returns " + MONTH_NAMES[airdate.getMonth()] + " " + airdate.getDate()
+					}
 				}
 			})
 		}
-		statusText = statusText || (show.status === "Running" ? "Break" : show.status)
+		statusText = statusText || (show.status === "Running" ? "On Break" : show.status.replace("To Be Determined", "On Break"))
 
-		var style = (statusText == "Ended") ? { display: "none" }
-			: (statusText.length > 1) ? { opacity: "0.5" }
-			: null
+		// Don't show ended shows; TODO: prune them on fetch
+		if (statusText === "Ended") {
+			return false
+		}
 
+		statusText = (statusText.length > 1) ? (<p>{statusText}</p>) : ""
+
+		var classList      = statusText ? "show row afk" : "show row"
 		var showNameForURL = encodeURIComponent(show.name.replace(/[^\w\s]/g, ""))
 		return (
-			<article className="row" style={style}>
+			<article className={classList}>
 				<div className="col-xs-12 col-sm-8">
-					<div className="row">
-						<div className="col-xs-12 col-sm-8">
-							<h2>{show.name}</h2>
-						</div>
-						<div className="col-xs-12 col-sm-4">
-							<p>{statusText}</p>
-						</div>
-					</div>
+					<h2>{show.name}</h2>
+					{statusText}
 				</div>
 				<div className="col-xs-12 col-sm-4">
 					<ul className="dl-list">

@@ -90,27 +90,25 @@ var assign     = require("lodash.assign")
 var babelify   = require("babelify")
 var browserify = require("browserify")
 var buffer     = require("vinyl-buffer")
-var rename     = require("gulp-rename")
 var source     = require("vinyl-source-stream")
 var uglify     = require("gulp-uglify")
 var watchify   = require("watchify")
 
+var babelifyOptions = {
+	presets: [ "es2015", "react" ]
+}
 var browserifyOptions = {
 	entries: [dirs.src + "/js/app.js"],
 	extensions: [".js", ".json", ".jsx"]
-}
-var babelifyOptions = {
-	presets: [ "es2015", "react" ]
 }
 
 gulp.task("build-js", function() {
 	var b = browserify(browserifyOptions)
 	b.transform(babelify, babelifyOptions)
 	return b.bundle()
-		.pipe(source("bundle.js"))
+		.pipe(source("app.js"))
 		.pipe(buffer())
 		.pipe(uglify({ mangle: false }))
-		.pipe(rename("app.js"))
 		.pipe(gulp.dest(dirs.dist + "/js"))
 })
 

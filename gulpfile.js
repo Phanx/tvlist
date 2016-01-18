@@ -48,7 +48,8 @@ gulp.task("clean", function(done) {
 	del([
 		dirs.dist + "/css",
 		dirs.dist + "/js"
-	]).then(function() {
+	])
+	.then(function() {
 		done()
 	})
 })
@@ -102,14 +103,18 @@ var browserifyOptions = {
 	extensions: [".js", ".json", ".jsx"]
 }
 
-gulp.task("build-js", function() {
-	var b = browserify(browserifyOptions)
-	b.transform(babelify, babelifyOptions)
-	return b.bundle()
+function bundle(src) {
+	return src.bundle()
 		.pipe(source("app.js"))
 		.pipe(buffer())
 		.pipe(uglify({ mangle: false }))
 		.pipe(gulp.dest(dirs.dist + "/js"))
+}
+
+gulp.task("build-js", function() {
+	var b = browserify(browserifyOptions)
+	b.transform(babelify, babelifyOptions)
+	return bundle(b)
 })
 
 var bw = watchify(browserify(assign({}, watchify.args, browserifyOptions)))
@@ -118,12 +123,7 @@ var bw = watchify(browserify(assign({}, watchify.args, browserifyOptions)))
 	bw.on("log", console.log)
 
 function buildify() {
-	return bw.bundle()
-		.pipe(source("bundle.js"))
-		.pipe(buffer())
-		.pipe(uglify({ mangle: false }))
-		.pipe(rename("app.js"))
-		.pipe(gulp.dest(dirs.dist + "/js"))
+	return bundle(bw)
 }
 
 gulp.task("watch-js", buildify)

@@ -53,7 +53,7 @@ $.getJSON("/api/shows", function(SHOWS) {
 				}
 
 				ReactDOM.render(
-					<ShowList data={data} today={DAYS[day]} />,
+					<ShowList data={data} initialDay={DAYS[day]} />,
 					document.getElementById("content")
 				)
 			}

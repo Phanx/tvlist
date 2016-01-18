@@ -11,14 +11,13 @@ module.exports = React.createClass({
 	},
 	render: function() {
 		console.log('initial selection: ' + this.props.initialDay)
-		var selectedDay = this.props.initialDay
-		var showGroups = $.map(this.props.data, function(day) {
+		var showGroups = $.map(this.props.data, (day) => {
 			return (
 				<ShowListGroup
 					key={day.name}
 					name={day.name}
 					shows={day.shows}
-					selected={day.name == initialDay} />
+					selected={day.name === this.props.initialDay} />
 			)
 		})
 		return (

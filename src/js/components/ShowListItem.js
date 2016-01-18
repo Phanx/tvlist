@@ -19,11 +19,12 @@ module.exports = React.createClass({
 					var airdate    = new Date(episode.airdate)
 					var daysToNext = Math.floor((airdate - today) / (1000 * 60 * 60 * 24))
 
-					if (daysToNext < 7) {
+					if (daysToNext < 6) {
 						statusText = " "
 					}
 					else {
-						statusText = "Returns " + MONTH_NAMES[airdate.getMonth()] + " " + airdate.getDate()
+						statusText = (episode.airdate == show.premiered) ? "Starts" : "Returns"
+						statusText += " " + MONTH_NAMES[airdate.getMonth()] + " " + airdate.getDate()
 					}
 				}
 			})

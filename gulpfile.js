@@ -99,6 +99,7 @@ var babelifyOptions = {
 	presets: [ "es2015", "react" ]
 }
 var browserifyOptions = {
+	debug: true,
 	entries: [dirs.src + "/js/app.js"],
 	extensions: [".js", ".json", ".jsx"]
 }

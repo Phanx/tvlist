@@ -2,6 +2,9 @@
 bower_components
 node_modules
 
+# lowdb storage
+api/data/db.json
+
 # Build output directories
 app/css
 app/js
@@ -31,3 +34,4 @@ Thumbs.db
 .TemporaryItems
 .Trashes
 .VolumeIcon.icns
+

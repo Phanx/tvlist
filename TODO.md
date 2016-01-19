@@ -1,15 +1,30 @@
 # TODO
 
-- Display "Starts" instead of "Returns" for new shows.
+- If db is empty on first run, populate from shows.json.
 
-- Prefer names as written in shows.json.
+- Implement a UI for the addshow API.
 
-- Use IDs in shows.json to construct IMDB and KAT links.
+- Prefer names as written in db.
 
-- Add epguides.com links.
+- Use IDs in db to construct IMDB and KAT links.
+
+- Add epguides.com links? (How to find?)
+
+- Move link patterns into the db instead of hardcoding.
+
+- Use db "pref" data when constructing links.
 
 - Use reponsive classes to hide info-only links if the
   screen is too small to fit them all.
+
+- Move fetching into the server API
+
+    - Store relevant data from TVmaze in the db. Keep a
+      timestamp for the last update for each show. Only
+      fetch new data from TVmaze if it's been more than
+      72 hours or if the saved next airdate has passed.
+
+    - Use http.request instead of jQuery for fetching.
 
 - Move next airdate detection into main routine so
   it only has to be calculated once.
@@ -30,12 +45,7 @@
     - Hide day sections with no shows? Or fade them
       out so it's obvious they're not clickable.
 
-- Move fetching into the server API
-
-- Use React animation instead of jQuery?
-
-- Prune unused parts from fetched data?
-
 ## Build process
 
 - Fix the package.json/scripts/build command?
+

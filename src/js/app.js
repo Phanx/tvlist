@@ -22,34 +22,64 @@ $.getJSON("/api/shows", function(SHOWS) {
 	})
 
 	SHOWS.forEach(function(show) {
-		var URL = "http://api.tvmaze.com/singlesearch/shows?q=" + encodeURIComponent(show.name.toLowerCase()) // + "&embed=episodes"
+		var URL
+	//	if (show.tvmaze) {
+	//		URL = "http://api.tvmaze.com/shows/" + show.tvmaze
+	//	} else if (show.imdb) {
+	//		URL = "http://api.tvmaze.com/lookup/shows?imdb=tt" + show.imdb
+	//	} else {
+			URL = "http://api.tvmaze.com/singlesearch/shows?q=" + encodeURIComponent(show.name)
+	//	}
+		console.log("----------")
 		console.log("Fetching data for show: " + show.name + " @ " + URL)
 
-		$.getJSON(URL, function(showdata) {
-			// console.log("----------")
-			console.log("Received data for show: " + show.name + " (" + numFetched + "/" + numShows + ")")
+		$.ajax({
+			url: URL,
+			method: "GET",
+			dataType: "json",
+			timeout: 3000,
+			error: function(jqXHR, textStatus, errorThrown) {
+				// deferred "fail" callback doesn't fire on timeout ?
+				console.log("AJAX error " + show.name + " " + textStatus + " " + errorThrown)
+				addDataForShow({
+					name: show.name,
+					schedule: { days: [] },
+					_embedded: { episodes: [] },
+					status: "Error getting info"
+				})
+			}
+		})
+		.fail(function(jqXHR, textStatus, error) {
+			console.log("Error fetching show: " + showName + " -- " + textStatus + ", " + error)
+		})
+		.done(function(showdata, textStatus, jqXHR) {
+			console.log("Received data for show: " + show.name)
 			// console.log(showdata)
 
 			showdata.name = show.name // prefer name as written in DB
 
 			if (showdata._links.nextepisode) {
-				// console.log("Fetching next episode @ " + showdata._links.nextepisode.href)
-				$.getJSON(showdata._links.nextepisode.href, function(episode) {
-					// console.log("Received next episode for show: " + show.name)
-					numFetched++
+				console.log("Fetching next episode @ " + showdata._links.nextepisode.href)
+				$.getJSON(showdata._links.nextepisode.href)
+				.done(function(episode) {
+					console.log("Received next episode for show: " + show.name)
 					showdata._embedded = {
 						episodes: [ episode ]
 					}
 					addDataForShow(showdata)
 				})
+				.fail(function(jqxhr, textStatus, error) {
+					console.log("Error fetching episode: " + showName + " -- " + textStatus + ", " + error)
+				})
 			} else {
-				// console.log("No next episode")
-				numFetched++
+				console.log("No next episode")
+				showdata.schedule.days = []
 				showdata._embedded = {
 					episodes: []
 				}
 				addDataForShow(showdata)
 			}
+			console.log("----------")
 		})
 	})
 
@@ -63,6 +93,8 @@ $.getJSON("/api/shows", function(SHOWS) {
 			return a.name.toLowerCase().replace(/^the /, "") > b.name.toLowerCase().replace(/^the /, "")
 		})
 
+		numFetched++
+		console.log("Waiting on data for " + (numShows - numFetched) + " shows.")
 		if (numFetched === numShows) {
 			console.log("----------")
 			console.log("All data received!")

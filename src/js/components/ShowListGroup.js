@@ -19,8 +19,8 @@ module.exports = React.createClass({
 	},
 	render: function() {
 		var contentStyle = (!this.props.selected) ? { display: "none" } : null
-		var showListItems = $.map(this.props.shows, function(show) {
-			return (<ShowListItem show={show} key={show.id} />)
+		var showListItems = $.map(this.props.shows, function(show, index) {
+			return (<ShowListItem show={show} key={show.id || index} />)
 		})
 		return (
 			<section className="show-group" id={this.props.name.toLowerCase()}>

@@ -4,8 +4,6 @@
 
 - Implement a UI for the addshow API.
 
-- Prefer names as written in db.
-
 - Use IDs in db to construct IMDB and KAT links.
 
 - Add epguides.com links? (How to find?)

@@ -30,6 +30,8 @@ $.getJSON("/api/shows", function(SHOWS) {
 			console.log("Received data for show: " + show.name + " (" + numFetched + "/" + numShows + ")")
 			// console.log(showdata)
 
+			showdata.name = show.name // prefer name as written in DB
+
 			if (showdata._links.nextepisode) {
 				// console.log("Fetching next episode @ " + showdata._links.nextepisode.href)
 				$.getJSON(showdata._links.nextepisode.href, function(episode) {

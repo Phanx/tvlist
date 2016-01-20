@@ -24,25 +24,24 @@ router.get("/shows", function(req, res) {
 })
 
 // Add new show to be tracked
-function addShow(name) {
+function addShow(name, res) {
 	if (typeof(name) == "string") {
 		console.log("Received request to add show: " + name)
 		db("shows").push({ name: name })
-		return res.status(200).json({
-			message: "Success"
-		})
+		return res.status(200).json({ message: "Show added!" })
 	} else {
-		return res.sendStatus(400)
+		return res.status(400).json({ error: "Show name not specified." })
 	}
 }
 
 router.route("/addshow")
 	.get(function(req, res) {
-		addShow(req.query.name)
+		addShow(req.query.name, res)
 	})
 	.post(function(req, res) {
-		addShow(req.body.name)
+		addShow(req.body.name, res)
 	})
 
 // EOF
 module.exports = router
+

@@ -53,26 +53,36 @@ router.get("/shows", function(req, res) {
 			var next = data._links.nextepisode
 		}
 	})
+
+	shows.sort(function(a, b) {
+		return a.name.toLowerCase().replace(/^the /, "") > b.name.toLowerCase().replace(/^the /, "")
+	})
 */
 	return res.status(200).json(shows)
 })
 
 // Add new show to be tracked
-router.post("/addshow", function(req, res) {
-	if (req.body && req.body.name) {
-		console.log("Received request to add show: " + req.body.name)
-		db("shows").push({ name: req.body.name })
+function addShow(name)
+	if (name) {
+		console.log("Received request to add show: " + name)
+		db("shows").push({ name: name })
 		return res.status(200).json({
 			message: "Success"
 		})
 	}
 	else {
-		return res.status(400).json({
-			error: "Bad request",
-			got: req.body
-		})
+		return res.sendStatus(400)
 	}
-})
+end
+
+router.route("/addshow")
+	.get(function(req, res) {
+		addShow(req.query && req.query.name)
+	})
+	.post(function(req, res) {
+		addShow(req.body && req.body.name)
+	})
 
 // EOF
 module.exports = router
+

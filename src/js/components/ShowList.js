@@ -1,22 +1,25 @@
-var React = require("react")
-var $ = require("jquery")
+const React = require("react")
+const $ = require("jquery")
 
-var ShowListGroup = require("./ShowListGroup")
+const ShowListGroup = require("./ShowListGroup")
+
+function sortByName(a, b) {
+	return a.name.toLowerCase().replace(/^the /, '') > b.name.toLowerCase().replace(/^the /, '')
+}
 
 module.exports = React.createClass({
 	propTypes: {
-		data      : React.PropTypes.array,
+		data      : React.PropTypes.array.isRequired,
 		id        : React.PropTypes.string,
 		initialDay: React.PropTypes.string
 	},
 	render: function() {
-		console.log('initial selection: ' + this.props.initialDay)
 		var showGroups = $.map(this.props.data, (day) => {
 			return (
 				<ShowListGroup
 					key={day.name}
 					name={day.name}
-					shows={day.shows}
+					shows={day.shows.sort(sortByName)}
 					selected={day.name === this.props.initialDay} />
 			)
 		})

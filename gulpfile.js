@@ -107,8 +107,8 @@ var browserifyOptions = {
 function bundle(src) {
 	return src.bundle()
 		.pipe(source("app.js"))
-		.pipe(buffer())
-		.pipe(uglify({ mangle: false }))
+		//.pipe(buffer())
+		//.pipe(uglify({ mangle: false }))
 		.pipe(gulp.dest(dirs.dist + "/js"))
 }
 
@@ -118,13 +118,16 @@ gulp.task("build-js", function() {
 	return bundle(b)
 })
 
-var bw = watchify(browserify(assign({}, watchify.args, browserifyOptions)))
-	bw.transform(babelify, babelifyOptions)
-	bw.on("update", buildify)
-	bw.on("log", console.log)
+gulp.task("watch-js", function() {
+	var bw = watchify(browserify(assign({}, watchify.args, browserifyOptions)))
+		bw.transform(babelify, babelifyOptions)
+		bw.on("update", buildify)
+		bw.on("log", console.log.bind(console))
 
-function buildify() {
-	return bundle(bw)
-}
+	function buildify() {
+		return bundle(bw)
+	}
 
-gulp.task("watch-js", buildify)
+	return buildify()
+})
+

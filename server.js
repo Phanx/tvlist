@@ -1,8 +1,8 @@
-var express = require("express")
-var app = express()
+const express = require("express")
+const app = express()
 
-var bodyParser = require("body-parser")
-var api = require("./api")
+const bodyParser = require("body-parser")
+const api = require("./api")
 
 // Set up the middlewares
 app.use(bodyParser.json())
@@ -15,8 +15,9 @@ app.use(express.static(__dirname + "/app"))
 app.use("/api", api)
 
 // Start the server
-app.set("port", process.env.PORT || 10101)
+app.set("port", process.env.PORT || 9021)
 
 var server = app.listen(app.get("port"), function() {
 	console.log("Serving on port " + app.get("port"))
 })
+

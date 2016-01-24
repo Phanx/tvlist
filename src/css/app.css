@@ -16,7 +16,7 @@ html {
 body {
 	background: var(--bg);
 	color: var(--fg);
-	font-family: Asap, sans-serif;
+	font-family: Oxygen, sans-serif;
 	height: 100%;
 	line-height: 1.5;
 }
@@ -30,26 +30,41 @@ a:hover, a:focus, a:active {
 h1 {
 	background: var(--bg-dark);
 	border-radius: var(--border-radius);
+	color: var(--fg-accent);
 	cursor: pointer;
 	font-size: 1.5em;
+	font-weight: 400;
 	margin: 1rem -1rem;
 	padding: 0.25rem 1rem;
 }
 h2 {
-	display: inline;
 	font-size: 1em;
 	font-weight: normal;
 	margin: 0;
 }
 p {
-	display: inline;
 	font-size: 80%;
 	font-style: italic;
-	margin: 0 0 0 0.5rem;
+	margin: 0;
 }
-p::before {
-	content: "\2014";
-	padding-right: 0.5rem;
+@media (min-width: 28em) {
+	h2 {
+		display: inline;
+	}
+	p {
+		display: inline;
+		margin-left: 0.5rem;
+	}
+	p::before {
+		content: "\2014";
+		padding-right: 0.5rem;
+	}
+}
+@media (max-width: 28em) {
+	.show {
+		margin-top: 1em;
+		margin-bottom: 1em;
+	}
 }
 .show:hover {
 	background: var(--bg-med);
@@ -73,8 +88,8 @@ p::before {
 	background-repeat: no-repeat;
 	background-size: 16px 16px;
 	border-radius: 50%;
-	display: inline-block;
 	box-sizing: border-box;
+	display: inline-block;
 	overflow-x: hidden;
 	text-indent: 1.5em;
 	white-space: nowrap;
@@ -85,17 +100,27 @@ p::before {
 .dl-list a:active {
 	background-color: var(--fg);
 }
+.dl-imdb {
+	background-image: url('../img/imdb.png');
+	display: none;
+}
 .dl-kat {
 	background-image: url('../img/kat.png');
 }
-.dl-rar {
+.dl-rarbg {
 	background-image: url('../img/rarbg.png');
 }
-.dl-tvm {
+.dl-tvmaze {
 	background-image: url('../img/tvmaze.png');
 }
 .dl-tz {
 	background-image: url('../img/torrentz.png');
+}
+@media (max-width: 32em) {
+	.dl-imdb,
+	.dl-tvm {
+		display: none !important;
+	}
 }
 
 /*
@@ -156,7 +181,7 @@ p::before {
 	flex: 1 0 auto;
 	margin: 0 auto;
 	max-width: 40em;
-	padding: 2em;
+	padding: 0 1em 2em;
 }
 
 /*

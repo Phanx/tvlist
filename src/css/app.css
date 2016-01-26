@@ -1,3 +1,4 @@
+/* csslint ignore:start */
 :root {
 	--bg: #40505D;
 	--bg-dark: rgba(0, 0, 0, 0.33);
@@ -9,6 +10,7 @@
 
 	--border-radius: 3px;
 }
+/* csslint ignore:end */
 
 html {
 	height: 100%;
@@ -17,6 +19,7 @@ body {
 	background: var(--bg);
 	color: var(--fg);
 	font-family: Oxygen, sans-serif;
+	font-size: 22px;
 	height: 100%;
 	line-height: 1.5;
 }
@@ -71,8 +74,19 @@ p {
 	border-radius: var(--border-radius);
 	box-shadow: 0 -0.4em 0 var(--bg-med);
 }
-.afk {
+.show .status {
+	opacity: 0;
+}
+.show.afk,
+.show:hover .status {
 	opacity: 0.6;
+}
+.show.afk .status,
+.show.afk:hover .status {
+	opacity: 1;
+}
+.show.afk:hover .status {
+	transition: opacity 0.2s;
 }
 .dl-list {
 	list-style: none;
@@ -193,4 +207,3 @@ p {
 .center-lg > * {
 	text-align: initial;
 }
-

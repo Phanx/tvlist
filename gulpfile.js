@@ -1,11 +1,23 @@
-var gulp = require("gulp")
+const gulp = require("gulp")
 
-var dirs = {
-	dist: './app',
-	src: './src'
+const config = {
+	dirs: {
+		dist : './app',
+		src  : './src'
+	},
+	babelify: {
+		presets    : [ "es2015", "react" ]
+	},
+	browserify: {
+		debug      : true,
+		extensions : [ ".js", ".json", ".jsx" ]
+	},
+	uglifyify: {
+		global     : true
+	}
 }
 
-gulp.task("default", function () {
+gulp.task("default", function() {
 	console.log("Available tasks:")
 	console.log("  watch     - Build and watch everything")
 	console.log("  watch-css - Build and watch just the CSS files")
@@ -22,7 +34,7 @@ gulp.task("default", function () {
 //		Meta
 //  ===================================================== //
 
-var runSequence = require("run-sequence")
+const runSequence = require("run-sequence")
 
 gulp.task("build", function(done) {
 	runSequence(
@@ -42,12 +54,12 @@ gulp.task("watch", function(done) {
 //  	clean
 //  ===================================================== //
 
-var del = require("del")
+const del = require("del")
 
 gulp.task("clean", function(done) {
 	del([
-		dirs.dist + "/css",
-		dirs.dist + "/js"
+		config.dirs.dist + "/css",
+		config.dirs.dist + "/js"
 	])
 	.then(function() {
 		done()
@@ -58,70 +70,67 @@ gulp.task("clean", function(done) {
 //		CSS
 //  ===================================================== //
 
-var autoprefixer = require("autoprefixer")
-var concat       = require("gulp-concat")
-// var cssnext   = require("postcss-cssnext")
-var csswring     = require("csswring")
-var postcss      = require("gulp-postcss")
+//const autoprefixer = require("autoprefixer")
+const concat       = require("gulp-concat")
+const cssnext      = require("postcss-cssnext")
+const csswring     = require("csswring")
+const postcss      = require("gulp-postcss")
 
 gulp.task("build-css", function(done) {
 	return gulp.src([
 			"node_modules/normalize.css/normalize.css",
 			"node_modules/flexboxgrid/dist/flexboxgrid.css",
-			dirs.src + "/css/**/*.css"
+			config.dirs.src + "/css/**/*.css"
 		])
 		.pipe(concat("app.css"))
 		.pipe(postcss([
-			autoprefixer({ browsers: ["last 2 versions"] }),
-			// cssnext,
+			//autoprefixer({ browsers: ["last 2 versions"] }),
+			cssnext({ browsers: ["last 2 versions"] }),
 			csswring({ preserveHacks: true, removeAllComments: true })
 		]))
-		.pipe(gulp.dest("app/css"))
+		.pipe(gulp.dest(config.dirs.dist + "/css"))
 })
 
 gulp.task("watch-css", ["build-css"], function() {
-	return gulp.watch(dirs.src + "/css/**/*.css", ["build-css"])
+	return gulp.watch(config.dirs.src + "/css/**/*.css", ["build-css"])
 })
 
 //  ===================================================== \\
 //		JS
 //  ===================================================== //
 
-var assign     = require("lodash.assign")
-var babelify   = require("babelify")
-var browserify = require("browserify")
-var buffer     = require("vinyl-buffer")
-var source     = require("vinyl-source-stream")
-var uglify     = require("gulp-uglify")
-var watchify   = require("watchify")
-
-var babelifyOptions = {
-	presets: [ "es2015", "react" ]
-}
-var browserifyOptions = {
-	debug: true,
-	entries: [dirs.src + "/js/app.js"],
-	extensions: [".js", ".json", ".jsx"]
-}
+const assign     = require("lodash.assign")
+const babelify   = require("babelify")
+const browserify = require("browserify")
+const buffer     = require("vinyl-buffer")
+// const exorcist  = require("exorcist")
+// const path      = require("path")
+const source     = require("vinyl-source-stream")
+const uglify     = require("gulp-uglify")
+// const uglifyify  = require("uglifyify")
+const watchify   = require("watchify")
 
 function bundle(src) {
 	return src.bundle()
 		.pipe(source("app.js"))
 		//.pipe(buffer())
 		//.pipe(uglify({ mangle: false }))
-		.pipe(gulp.dest(dirs.dist + "/js"))
+		.pipe(gulp.dest(config.dirs.dist + "/js"))
 }
 
 gulp.task("build-js", function() {
-	var b = browserify(browserifyOptions)
-	b.transform(babelify, babelifyOptions)
+	var b = browserify(config.dirs.src + "/js/app.js", config.browserify)
+	b.transform(babelify, config.babelify)
+	//b.transform(uglifyify, config.uglifyify)
 	return bundle(b)
 })
 
 gulp.task("watch-js", function() {
-	var bw = watchify(browserify(assign({}, watchify.args, browserifyOptions)))
-		bw.transform(babelify, babelifyOptions)
+	var bw = watchify(browserify(config.dirs.src + "/js/app.js", assign({}, watchify.args, config.browserify)))
+		bw.transform(babelify, config.babelify)
+		//b.transform(uglifyify, config.uglifyify)
 		bw.on("update", buildify)
+		bw.on("error", console.log.bind(console))
 		bw.on("log", console.log.bind(console))
 
 	function buildify() {
@@ -130,4 +139,3 @@ gulp.task("watch-js", function() {
 
 	return buildify()
 })
-

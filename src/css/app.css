@@ -136,6 +136,54 @@ p {
 		display: none !important;
 	}
 }
+form footer, form aside {
+	margin: 2em 0 1em;
+}
+.form-group {
+	margin: 0 0 1em;
+}
+.form-group label {
+	cursor: pointer;
+	display: block;
+}
+.form-group input {
+	background: var(--bg-dark);
+	border: 0;
+	border-radius: var(--border-radius);
+	box-sizing: border-box;
+	display: block;
+	padding: 0.25em 0.5em;
+	width: 100%;
+}
+.btn {
+	background: var(--bg-med);
+	border: 2px solid transparent;
+	border-radius: var(--border-radius);
+	box-sizing: border-box;
+	color: var(--fg-accent);
+	cursor: pointer;
+	display: inline-block;
+	padding: 0.25em 1em;
+	text-align: center;
+	vertical-align: middle;
+}
+.btn:hover, .btn:focus, .btn:active {
+	border-color: var(--bg-dark);
+}
+.btn-primary {
+	background: var(--bg-dark);
+	border-width: 0;
+}
+.btn-block {
+	display: block;
+	width: 100%;
+}
+.btn:disabled {
+	border-width: 0;
+	color: inherit;
+	cursor: not-allowed;
+	opacity: 0.5;
+}
 
 /*
  *	Animated loading dots

@@ -6,6 +6,9 @@
 
 - Move link patterns into the db instead of hardcoding.
 
+- Display "Today" instead of "Next: (next week)" for
+  shows airing on the current day.
+
 - Move next airdate detection into main routine so
   it only has to be calculated once.
 

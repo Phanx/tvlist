@@ -1,14 +1,17 @@
 const React  = require("react")
+
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
 const ONEDAY = 1000 * 60 * 60 * 24
 
 
 function getDateString(date) {
-	var m = date.getMonth() + 1
-	var d = date.getDate()
-	return date.getFullYear() + "-" + (m < 10 ? "0" + m : m) + "-" + (d < 10 ? "0" + d : d)
+	let y = date.getFullYear()
+	let m = date.getMonth() + 1
+	let d = date.getDate()
+	return y + "-" + (m < 10 ? "0" + m : m) + "-" + (d < 10 ? "0" + d : d)
 }
-const TODAY = new Date(getDateString(new Date()))
+const TODAYSTRING = getDateString(new Date())
+const TODAY = new Date(TODAYSTRING)
 
 
 const ShowListItem = React.createClass({
@@ -33,19 +36,19 @@ const ShowListItem = React.createClass({
 		this.props.setShowToEdit && this.props.setShowToEdit(this.props.item)
 	},
 	render: function() {
-		var show = this.props.item
-		var classList = "show row"
-		var statusText
+		let show = this.props.item
+		let classList = "show row"
+		let statusText
 
 		if (show.nextDate) {
-			var nextDate = new Date(show.nextDate)
-			var daysToNext = Math.floor((nextDate - TODAY) / ONEDAY)
+			let nextDate = new Date(show.nextDate)
+			let daysToNext = Math.floor((nextDate - TODAY) / ONEDAY)
 			if (daysToNext === 0) {
 				statusText = "Today"
 			} else {
-				var nextDateText = MONTHS[nextDate.getMonth()] + " " + nextDate.getDate()
-				if (daysToNext < 7) {
-					statusText = "Next: " + nextDateText + " (" + daysToNext + " days)"
+				let nextDateText = MONTHS[nextDate.getMonth()] + " " + nextDate.getDate()
+				if (daysToNext <= 7) {
+					statusText = "Next " + nextDateText // + " (" + daysToNext + " days)"
 				} else {
 					classList += " afk"
 					statusText  = ((show.nextDate == show.premiered) ? "Starts" : "Returns")
@@ -64,16 +67,18 @@ const ShowListItem = React.createClass({
 			return false
 		}*/
 
-		var showNameForURL = encodeURIComponent(show.name.toLowerCase().replace(/[^\w\s]/g, " ").replace(/\s\s+/g, " "))
-		var prefQuery = show.pref ? " " + show.pref : ""
+		let showNameForURL = encodeURIComponent(show.name.toLowerCase().replace(/[^\w\s]/g, " ").replace(/\s\s+/g, " "))
+		let prefQuery = show.pref ? " " + show.pref : ""
 
-		var imdbURL = show.imdb
+		let imdbURL = show.imdb
 			? "http://www.imdb.com/title/" + show.imdb
 			: "http://www.imdb.com/find?q=" + showNameForURL + "&s=tt"
-		var tvmazeURL = show.tvmaze
+
+		let tvmazeURL = show.tvmaze
 			? "http://www.tvmaze.com/shows/" + show.tvmaze
 			: "http://www.tvmaze.com/search?q=" + showNameForURL
-		var katURL = show.kat
+
+		let katURL = show.kat
 			? "https://kat.cr/" + showNameForURL.replace(/\s/, "-") + "-tv" + show.kat + "/"
 			: "https://kat.cr/usearch/?q=" + showNameForURL + prefQuery + "%20category:tv&field=time_add&sorder=desc"
 
@@ -98,3 +103,4 @@ const ShowListItem = React.createClass({
 })
 
 module.exports = ShowListItem
+

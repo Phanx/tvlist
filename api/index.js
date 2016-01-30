@@ -1,3 +1,5 @@
+"use strict"
+
 const router    = require("express").Router()
 const http      = require("http")
 
@@ -11,8 +13,22 @@ const db        = lowdb(dbFile, { storage: dbStorage })
 const UPDATE_INTERVAL = 3 * 24 * 60 * 60 * 1000
 const REQUEST_TIMEOUT = 3000
 
+const VALID_DATA_TYPES = {
+	name        : "string",
+	image       : "string",
+	imdb        : "string",
+	kat         : "string",
+	nextDate    : "string",
+	nextDateTime: "string",
+	nextURL     : "string",
+	premiered   : "string",
+	status      : "string",
+	tvmaze      : "number",
+	url         : "string",
+	updated     : "string",
+	weekday     : "string"
+}
 
-// >_<
 function getDateString(date) {
 	var m = date.getMonth() + 1
 	var d = date.getDate()
@@ -60,7 +76,7 @@ function getJSON(url, callback, name) {
 router.get("/shows", (req, res) => {
 	const shows = db("shows")
 	const showsCount = shows.size()
-	console.log("Tracking " + showsCount + " shows.")
+	// console.log("Tracking " + showsCount + " shows.")
 
 	// Populate with defaults on first run
 	if (showsCount === 0) {
@@ -191,17 +207,44 @@ router.post("/addshow", (req, res) => {
 // Update a show
 router.post("/editshow", (req, res) => {
 	var name = req.body.name
+	var changes = req.body.changes
+	console.log("/editshow", name, changes)
+	if (typeof(name) !== "string") {
+		return res.status(200).json({ error: "Show name not specified." })
+	}
+	if (typeof(changes) !== "object" || changes == null || Object.keys(changes).length === 0) {
+		return res.status(200).json({ error: "No changes specified." })
+	}
+	Object.keys(changes).forEach((k) => {
+		let v = changes[k]
+		// TODO: use empty string to delete?
+		if (v == null || VALID_DATA_TYPES[k] == null || typeof(v) !== typeof(VALID_DATA_TYPES[k])) {
+			console.log("Dropping invalid property:", k, v, typeof(v), typeof(VALID_DATA_TYPES[k]))
+			delete changes[k]
+		}
+	})
+/*
+	db("shows")
+		.chain()
+		.find({ name: name })
+		.assign(changes)
+		.value()
+*/
+	return res.status(200).json({ message: "Request received.", data: changes })
+})
+
+
+// Delete a show
+router.post("/deleteshow", (req, res) => {
+	var name = req.body.name
 	if (typeof(name) === "undefined") {
 		return res.status(200).json({ error: "Show name not specified." })
 	}
-	var data = {}
-	if (req.body.new_name) {
-		data.name = req.body.new_name
-	}
-
-	var show = db("shows").chain().find({ name: name })
+	console.log("Received request to delete show:")
+	return res.status(200).json({ message: "Request received." })
 })
 
 
 // EOF
 module.exports = router
+

@@ -11,30 +11,51 @@ function getDateString(date) {
 const TODAY = new Date(getDateString(new Date()))
 
 
-module.exports = React.createClass({
+const ShowListItem = React.createClass({
 	propTypes: {
-		show: React.PropTypes.object
+		item: React.PropTypes.shape({
+			name     : React.PropTypes.string.isRequired,
+			nextDate : React.PropTypes.string,
+			premiered: React.PropTypes.string,
+			status   : React.PropTypes.string,
+			pref     : React.PropTypes.string,
+			imdb     : React.PropTypes.string,
+			kat      : React.PropTypes.oneOfType([
+							React.PropTypes.number,
+							React.PropTypes.string
+						]),
+			tvmaze   : React.PropTypes.number
+		}).isRequired,
+		setShowToEdit: React.PropTypes.func
+	},
+	handleRightClick: function(event) {
+		event.preventDefault()
+		this.props.setShowToEdit && this.props.setShowToEdit(this.props.item)
 	},
 	render: function() {
-		var show = this.props.show
+		var show = this.props.item
 		var classList = "show row"
 		var statusText
 
 		if (show.nextDate) {
 			var nextDate = new Date(show.nextDate)
 			var daysToNext = Math.floor((nextDate - TODAY) / ONEDAY)
-			if (daysToNext > 6) {
-				classList += " afk"
-				statusText  = ((show.nextDate == show.premiered) ? "Starts" : "Returns")
-					+ " " + MONTHS[nextDate.getMonth()]
-					+ " " + nextDate.getDate()
+			if (daysToNext === 0) {
+				statusText = "Today"
 			} else {
-				console.log("Next episode of " + show.name + " is on " + show.nextDate + " (" + daysToNext + " days from now)")
-				// statusText = "Next: " + show.nextDate + " (" + daysToNext + " days)"
+				var nextDateText = MONTHS[nextDate.getMonth()] + " " + nextDate.getDate()
+				if (daysToNext < 7) {
+					statusText = "Next: " + nextDateText + " (" + daysToNext + " days)"
+				} else {
+					classList += " afk"
+					statusText  = ((show.nextDate == show.premiered) ? "Starts" : "Returns")
+						+ " " + nextDateText
+				}
 			}
 		} else {
 			classList += " afk"
-			statusText = (show.status === "Running" || show.status === "To Be Determined") ? "On Break" : show.status
+			statusText = (show.status === "Running" || show.status === "To Be Determined")
+				? "On Break" : show.status
 		}
 
 		// Don't show ended shows; TODO: prune them on fetch
@@ -42,8 +63,6 @@ module.exports = React.createClass({
 		/*if (statusText === "Ended") {
 			return false
 		}*/
-
-		statusText = statusText ? (<p>{statusText}</p>) : false
 
 		var showNameForURL = encodeURIComponent(show.name.toLowerCase().replace(/[^\w\s]/g, " ").replace(/\s\s+/g, " "))
 		var prefQuery = show.pref ? " " + show.pref : ""
@@ -60,9 +79,9 @@ module.exports = React.createClass({
 
 		return (
 			<article className={classList}>
-				<div className="col-xs-6 col-sm-8">
+				<div className="col-xs-6 col-sm-8" onContextMenu={this.handleRightClick}>
 					<h2>{show.name}</h2>
-					{statusText}
+					<p className="status">{statusText}</p>
 				</div>
 				<div className="col-xs-6 col-sm-4">
 					<ul className="dl-list">
@@ -77,3 +96,5 @@ module.exports = React.createClass({
 		)
 	}
 })
+
+module.exports = ShowListItem

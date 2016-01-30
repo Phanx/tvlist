@@ -1,13 +1,14 @@
-var React = require("react")
-var $ = require("jquery")
+const React = require("react")
+const $ = require("jquery")
 
-var ShowListItem = require("./ShowListItem")
+const ShowListItem = require("./ShowListItem")
 
-module.exports = React.createClass({
+const ShowListGroup = React.createClass({
 	propTypes: {
-		name    : React.PropTypes.string.isRequired,
-		shows   : React.PropTypes.array.isRequired,
-		selected: React.PropTypes.bool
+		name         : React.PropTypes.string.isRequired,
+		shows        : React.PropTypes.array.isRequired,
+		selected     : React.PropTypes.bool,
+		setShowToEdit: React.PropTypes.func
 	},
 	onClickHeader: function(event) {
 		var group = event.target.parentNode.parentNode
@@ -19,8 +20,10 @@ module.exports = React.createClass({
 	},
 	render: function() {
 		var contentStyle = (!this.props.selected) ? { display: "none" } : null
-		var showListItems = $.map(this.props.shows, function(show, index) {
-			return (<ShowListItem show={show} key={show.name} />)
+		var showListItems = $.map(this.props.shows, (show, index) => {
+			return (
+				<ShowListItem item={show} key={show.name} setShowToEdit={this.props.setShowToEdit} />
+			)
 		})
 		return (
 			<section className="show-group" id={this.props.name.toLowerCase()}>
@@ -35,3 +38,4 @@ module.exports = React.createClass({
 	}
 })
 
+module.exports = ShowListGroup

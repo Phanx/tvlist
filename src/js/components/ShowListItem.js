@@ -6,8 +6,8 @@ const ONEDAY = 1000 * 60 * 60 * 24
 
 function getDateString(date) {
 	let y = date.getFullYear()
-	let m = date.getMonth() + 1
-	let d = date.getDate()
+	let m = date.getUTCMonth() + 1
+	let d = date.getUTCDate()
 	return y + "-" + (m < 10 ? "0" + m : m) + "-" + (d < 10 ? "0" + d : d)
 }
 const TODAYSTRING = getDateString(new Date())
@@ -46,7 +46,7 @@ const ShowListItem = React.createClass({
 			if (daysToNext === 0) {
 				statusText = "Today"
 			} else {
-				let nextDateText = MONTHS[nextDate.getMonth()] + " " + nextDate.getDate()
+				let nextDateText = MONTHS[nextDate.getUTCMonth()] + " " + nextDate.getUTCDate()
 				if (daysToNext <= 7) {
 					statusText = "Next " + nextDateText // + " (" + daysToNext + " days)"
 				} else {

@@ -1,4 +1,3 @@
-/* csslint ignore:start */
 :root {
 	--bg: #40505D;
 	--bg-dark: rgba(0, 0, 0, 0.33);
@@ -10,7 +9,6 @@
 
 	--border-radius: 3px;
 }
-/* csslint ignore:end */
 
 html {
 	height: 100%;
@@ -238,11 +236,13 @@ form footer, form aside {
 #footer {
 	background: var(--bg-dark);
 	flex: none;
+	overflow: auto;
 }
 #content {
 	flex: 1 0 auto;
 	margin: 0 auto;
 	max-width: 40em;
+	overflow: auto;
 	padding: 0 1em 2em;
 }
 

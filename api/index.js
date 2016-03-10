@@ -26,7 +26,8 @@ const VALID_DATA_TYPES = {
 	tvmaze      : "number",
 	url         : "string",
 	updated     : "string",
-	weekday     : "string"
+	weekday     : "string",
+	pref        : "string"
 }
 
 function getDateString(date) {
@@ -224,14 +225,12 @@ router.post("/editshow", (req, res) => {
 			delete changes[k]
 		}
 	})
-/*
 	db("shows")
 		.chain()
 		.find({ name: name })
 		.assign(changes)
 		.value()
-*/
-	return res.status(200).json({ message: "Request received.", data: changes })
+	return res.status(200).json({ message: "Changes saved." })
 })
 
 

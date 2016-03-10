@@ -21,7 +21,7 @@ const ShowEdit = React.createClass({
 		whenDoneEditing: React.PropTypes.func
 	},
 	getInitialState: function() {
-		var state = {
+		const state = {
 			canDelete: false
 		}
 		if (this.props.item) {
@@ -33,17 +33,17 @@ const ShowEdit = React.createClass({
 	},
 	handleChange: function(event) {
 		// console.log("handleChange", event.target.name, event.target.value)
-		var value = event.target.value.trim()
-		var newstate = {}
-		newstate[event.target.name] = (value.length > 0) ? value : null
+		const value = event.target.value
+		let newstate = {}
+		newstate[event.target.name] = (value.length > 0 && value.trim().length > 0) ? value : ""
 		this.setState(newstate)
 	},
 	handleSubmit: function(event) {
 		event.preventDefault()
-		var changes = {}
+		let changes = {}
 		Object.keys(this.state).forEach((key) => {
-			var oldValue = (this.props.item[key] || "").toString()
-			var newValue = this.state[key].toString()
+			const oldValue = (this.props.item[key] || "").toString()
+			const newValue = this.state[key].toString()
 			if (oldValue !== newValue) {
 				changes[key] = newValue
 			}
@@ -53,9 +53,22 @@ const ShowEdit = React.createClass({
 			this.handleCancel(event)
 		} else {
 			console.log("handleSubmit", this.props.item.name, changes)
-			// TODO: save data
-			// Pass back up the chain
-			this.props.whenDoneEditing && this.props.whenDoneEditing("REFRESH")
+			$.post({
+				url: "/api/editshow",
+				data: {
+					name: this.props.item.name,
+					changes: changes
+				}
+			})
+			.done((data, textStatus, jqXHR) => {
+				// Pass back up the chain
+				console.log("submission succeeded:", this.props.item.name, data)
+				this.props.whenDoneEditing && this.props.whenDoneEditing("REFRESH")
+			})
+			.fail((jqXHR, textStatus, errorThrown) => {
+				console.log("submission failed:", this.props.item.name, textStatus, errorThrown)
+				this.handleCancel(event)
+			})
 		}
 	},
 	handleCancel: function(event) {

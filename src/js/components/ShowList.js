@@ -16,16 +16,21 @@ const ShowList = React.createClass({
 	},
 	getInitialState: function() {
 		return {
-			editingShow: false
+			editingShow: false,
+			expandedDay: this.props.initialDay
 		}
+	},
+	setExpandedDay: function(day) {
+		console.log("setExpandedDay", day)
+		this.setState({ expandedDay: day })
 	},
 	setShowToEdit: function(show) {
 		console.log("setShowToEdit", show)
-	//	if (show === "REFRESH") {
-	//		document.location.reload(true)
-	//	} else {
+		if (show === "REFRESH") {
+			document.location.reload(true)
+		} else {
 			this.setState({ editingShow: show || false })
-	//	}
+		}
 	},
 	render: function() {
 		const editingShow = this.state.editingShow
@@ -42,7 +47,8 @@ const ShowList = React.createClass({
 						key={day.name}
 						name={day.name}
 						shows={day.shows.sort(sortByName)}
-						selected={day.name === this.props.initialDay}
+						selected={day.name === this.state.expandedDay}
+						setExpandedDay={this.setExpandedDay}
 						setShowToEdit={this.setShowToEdit} />
 				)
 			})

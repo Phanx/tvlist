@@ -30,8 +30,8 @@ const VALID_DATA_TYPES = {
 }
 
 function getDateString(date) {
-	var m = date.getMonth() + 1
-	var d = date.getDate()
+	const m = date.getMonth() + 1
+	const d = date.getDate()
 	return date.getFullYear() + "-" + (m < 10 ? "0" + m : m) + "-" + (d < 10 ? "0" + d : d)
 }
 const NOW = new Date()
@@ -41,8 +41,8 @@ const TODAY = new Date(getDateString(NOW))
 // HTTP GET request helper
 function getJSON(url, callback, name) {
 	// name = name ? name : "<unnamed request>"
-	var data = ""
-	var req = http.get(url, (res) => {
+	let data = ""
+	const req = http.get(url, (res) => {
 		// console.log("Requested data for", name, res.statusCode)
 		res.on("data", (chunk) => {
 			// console.log("Received chunk for", name)
@@ -87,7 +87,7 @@ router.get("/shows", (req, res) => {
 	}
 
 	// Fetch show details from TVmaze API
-	var waiting = showsCount
+	let waiting = showsCount
 
 	shows.forEach((show) => {
 		const lastUpdated = new Date(show.updated || 0)
@@ -106,17 +106,12 @@ router.get("/shows", (req, res) => {
 	})
 
 	function fetchDataForShow(show) {
-		var showName = show.name
+		const showName = show.name
 
-		var url
-		if (show.tvmaze) {
-			url = "http://api.tvmaze.com/shows/" + show.tvmaze
-	//	} else if (show.imdb) {
-	//		url = "http://api.tvmaze.com/lookup/shows?imdb=" + show.imdb
-	//		// Doesn't work for most "in development" shows
-		} else {
-			url = "http://api.tvmaze.com/singlesearch/shows?q=" + encodeURIComponent(showName)
-		}
+		let url = show.tvmaze ? "http://api.tvmaze.com/shows/" + show.tvmaze
+			// : show.imdb ? "http://api.tvmaze.com/lookup/shows?imdb=" + show.imdb
+			// ^ Doesn't work for most "in development" shows
+			: "http://api.tvmaze.com/singlesearch/shows?q=" + encodeURIComponent(showName)
 
 		// console.log("Fetching data for show:", showName, url)
 		getJSON(url, (showData, errorText) => {
@@ -125,8 +120,17 @@ router.get("/shows", (req, res) => {
 	}
 
 	function processDataForShow(showName, showData) {
-		if (typeof(showData) === "undefined" || showData === null) {
-			// console.log("No data for show:", showName)
+		if (typeof(showData) === "undefined" || showData === null || showData.status === 404) {
+			console.log("No data for show:", showName)
+			if (showData.status === 404) {
+				console.log("Bad TVmaze ID for show:", showName)
+				db("shows")
+					.chain()
+					.find({ name: showName })
+					.assign({ tvmaze: undefined })
+					.value()
+				fetchDataForShow(db("shows").find({ name: showName }))
+			}
 			return useDataForShow(showName)
 		} else if (showData._links && showData._links.nextepisode) {
 			// console.log("Fetching data for next episode:", showName, showData._links.nextepisode.href)
@@ -145,11 +149,11 @@ router.get("/shows", (req, res) => {
 			.chain()
 			.find({ name: showName })
 			.assign({
-				image       : showData.image ? showData.image.medium : null,
+				image       : showData.image ? showData.image.medium : undefined,
 				imdb        : showData.externals.imdb,
-				nextDate    : epData ? epData.airdate : null,
-				nextDateTime: epData ? epData.airstamp : null,
-				nextURL     : epData ? epData._links.self.href : null,
+				nextDate    : epData ? epData.airdate : undefined,
+				nextDateTime: epData ? epData.airstamp : undefined,
+				nextURL     : epData ? epData._links.self.href : undefined,
 				premiered   : showData.premiered,
 				status      : showData.status,
 				tvmaze      : showData.id,
@@ -174,7 +178,7 @@ router.get("/shows", (req, res) => {
 function addShow(res, name) {
 	if (typeof(name) === "string") {
 		console.log("Received request to add show: " + name)
-		var found = db("shows").find({ name: name })
+		const found = db("shows").find({ name: name })
 		if (typeof(found) === "undefined") {
 			db("shows")
 			.push({ name: name })
@@ -206,8 +210,8 @@ router.post("/addshow", (req, res) => {
 
 // Update a show
 router.post("/editshow", (req, res) => {
-	var name = req.body.name
-	var changes = req.body.changes
+	const name = req.body.name
+	const changes = req.body.changes
 	console.log("/editshow", name, changes)
 	if (typeof(name) !== "string") {
 		return res.status(200).json({ error: "Show name not specified." })
@@ -236,7 +240,7 @@ router.post("/editshow", (req, res) => {
 
 // Delete a show
 router.post("/deleteshow", (req, res) => {
-	var name = req.body.name
+	const name = req.body.name
 	if (typeof(name) === "undefined") {
 		return res.status(200).json({ error: "Show name not specified." })
 	}

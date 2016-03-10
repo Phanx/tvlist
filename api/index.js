@@ -175,7 +175,8 @@ router.get("/shows", (req, res) => {
 
 
 // Add new show to be tracked
-function addShow(res, name) {
+function addShow(req, res) {
+	const name = req.query && req.query.name || req.body && req.body.name
 	if (typeof(name) === "string") {
 		console.log("Received request to add show: " + name)
 		const found = db("shows").find({ name: name })
@@ -183,6 +184,7 @@ function addShow(res, name) {
 			db("shows")
 			.push({ name: name })
 			.then((show) => {
+				// TODO: fetch data for it now
 				return res.status(200).json({
 					message: "Show added!",
 					show: show
@@ -200,13 +202,8 @@ function addShow(res, name) {
 		})
 	}
 }
-router.get("/addshow", (req, res) => {
-	addShow(res, req.query.name)
-})
-router.post("/addshow", (req, res) => {
-	addShow(res, req.body.name)
-})
-
+router.get("/addshow", addShow)
+router.post("/addshow", addShow)
 
 // Update a show
 router.post("/editshow", (req, res) => {

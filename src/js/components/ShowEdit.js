@@ -121,7 +121,7 @@ const ShowEdit = React.createClass({
 					<aside className="row">
 						<div className="col-xs">
 							<button type="button" ref="deleteButton" className="btn btn-block"
-								disabled={this.state.canDelete}
+								disabled={!this.state.canDelete}
 								onClick={this.handleDelete}>Delete</button>
 						</div>
 						<div className="col-xs">

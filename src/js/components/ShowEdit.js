@@ -84,8 +84,21 @@ const ShowEdit = React.createClass({
 		if (this.state.canDelete) {
 			console.log("handleDelete", this.props.item.name)
 			// TODO: delete show
-			// Pass back up the chain
-			this.props.whenDoneEditing && this.props.whenDoneEditing("REFRESH")
+			$.post({
+				url: "/api/deleteshow",
+				data: {
+					name: this.props.item.name
+				}
+			})
+			.done((data, textStatus, jqXHR) => {
+				// Pass back up the chain
+				console.log("submission succeeded:", this.props.item.name, data)
+				this.props.whenDoneEditing && this.props.whenDoneEditing("REFRESH")
+			})
+			.fail((jqXHR, textStatus, errorThrown) => {
+				console.log("submission failed:", this.props.item.name, textStatus, errorThrown)
+				this.handleCancel(event)
+			})
 		}
 	},
 	render: function() {

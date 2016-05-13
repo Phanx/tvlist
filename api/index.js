@@ -220,6 +220,7 @@ router.post("/editshow", (req, res) => {
 	Object.keys(changes).forEach((k) => {
 		let v = changes[k]
 		// TODO: use empty string to delete?
+		// TODO: send list of dropped properties with response?
 		if (v == null || VALID_DATA_TYPES[k] == null || typeof(v) !== typeof(VALID_DATA_TYPES[k])) {
 			console.log("Dropping invalid property:", k, v, typeof(v), typeof(VALID_DATA_TYPES[k]))
 			delete changes[k]
@@ -240,8 +241,9 @@ router.post("/deleteshow", (req, res) => {
 	if (typeof(name) === "undefined") {
 		return res.status(200).json({ error: "Show name not specified." })
 	}
-	console.log("Received request to delete show:")
-	return res.status(200).json({ message: "Request received." })
+	console.log("Received request to delete show: " + name)
+	db("shows").remove({ name: name })
+	return res.status(200).json({ message: "Show deleted." })
 })
 
 

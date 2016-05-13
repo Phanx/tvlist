@@ -53,7 +53,7 @@ const ShowList = React.createClass({
 				)
 			})
 			return (
-				<section className="show-list" id={this.props.id}>
+				<section className="show-list container" id={this.props.id}>
 					{showGroups}
 				</section>
 			)

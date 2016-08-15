@@ -121,9 +121,9 @@ router.get("/shows", (req, res) => {
 	}
 
 	function processDataForShow(showName, showData) {
-		if (typeof(showData) === "undefined" || showData === null || showData.status === 404) {
+		if (!showData || showData.status === 404) {
 			console.log("No data for show:", showName)
-			if (showData.status === 404) {
+			if (showData && showData.status === 404) {
 				console.log("Bad TVmaze ID for show:", showName)
 				db("shows")
 					.chain()

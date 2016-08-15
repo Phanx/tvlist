@@ -17,16 +17,12 @@ const TODAY = new Date(TODAYSTRING)
 const ShowListItem = React.createClass({
 	propTypes: {
 		item: React.PropTypes.shape({
-			name     : React.PropTypes.string.isRequired,
+			name	 : React.PropTypes.string.isRequired,
 			nextDate : React.PropTypes.string,
 			premiered: React.PropTypes.string,
 			status   : React.PropTypes.string,
-			pref     : React.PropTypes.string,
-			imdb     : React.PropTypes.string,
-			kat      : React.PropTypes.oneOfType([
-							React.PropTypes.number,
-							React.PropTypes.string
-						]),
+			pref	 : React.PropTypes.string,
+			imdb	 : React.PropTypes.string,
 			tvmaze   : React.PropTypes.number
 		}).isRequired,
 		setShowToEdit: React.PropTypes.func
@@ -70,17 +66,21 @@ const ShowListItem = React.createClass({
 		let showNameForURL = encodeURIComponent(show.name.toLowerCase().replace(/[^\w\s]/g, " ").replace(/\s\s+/g, " "))
 		let prefQuery = show.pref ? " " + show.pref : ""
 
-		let imdbURL = show.imdb
-			? "http://www.imdb.com/title/" + show.imdb
-			: "http://www.imdb.com/find?q=" + showNameForURL + "&s=tt"
+		let links = []
 
-		let tvmazeURL = show.tvmaze
-			? "http://www.tvmaze.com/shows/" + show.tvmaze
-			: "http://www.tvmaze.com/search?q=" + showNameForURL
+		if (show.imdb) {
+			links.push(<li><a className="dl-imdb" href={"http://www.imdb.com/title/" + show.imdb}>IMDb</a></li>)
+		} else {
+			links.push(<li><a className="dl-imdb" href={"http://www.imdb.com/find?q=" + showNameForURL + "&s=tt"}>IMDb</a></li>)
+		}
 
-		let katURL = show.kat
-			? "https://kat.cr/" + showNameForURL.replace(/\s/, "-") + "-tv" + show.kat + "/"
-			: "https://kat.cr/usearch/?q=" + showNameForURL + prefQuery + "%20category:tv&field=time_add&sorder=desc"
+		if (show.tvmaze) {
+			links.push(<li><a className="dl-tvmaze" href={"http://www.tvmaze.com/shows/" + show.tvmaze}>TVMaze</a></li>)
+		} else {
+			links.push(<li><a className="dl-tvmaze" href={"http://www.tvmaze.com/search?q=" + showNameForURL}>TVMaze</a></li>)
+		}
+
+		links.push(<li><a className="dl-rarbg" href={"https://rarbg.to/torrents.php?search=" + showNameForURL + prefQuery}>RARBG</a></li>)
 
 		return (
 			<article className={classList}>
@@ -90,11 +90,7 @@ const ShowListItem = React.createClass({
 				</div>
 				<div className="col-xs-6 col-sm-4">
 					<ul className="dl-list">
-						<li><a className="dl-imdb"   href={imdbURL}>IMDb</a></li>
-						<li><a className="dl-tvmaze" href={tvmazeURL}>TVMaze</a></li>
-						<li><a className="dl-kat"    href={katURL}>KAT</a></li>
-						<li><a className="dl-rarbg"  href={"https://rarbg.to/torrents.php?search=" + showNameForURL + prefQuery}>RARBG</a></li>
-						<li><a className="dl-tz"     href={"https://torrentz.eu/searchA?f=" + showNameForURL + prefQuery}>Torrentz</a></li>
+						{links}
 					</ul>
 				</div>
 			</article>

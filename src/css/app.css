@@ -116,17 +116,11 @@ p {
 	background-image: url('../img/imdb.png');
 	display: none;
 }
-.dl-kat {
-	background-image: url('../img/kat.png');
-}
 .dl-rarbg {
 	background-image: url('../img/rarbg.png');
 }
 .dl-tvmaze {
 	background-image: url('../img/tvmaze.png');
-}
-.dl-tz {
-	background-image: url('../img/torrentz.png');
 }
 @media (max-width: 32em) {
 	.dl-imdb,

@@ -9,10 +9,6 @@ const ShowEdit = React.createClass({
 			name  : React.PropTypes.string.isRequired,
 			pref  : React.PropTypes.string,
 			imdb  : React.PropTypes.string,
-			kat   : React.PropTypes.oneOfType([
-						React.PropTypes.number,
-						React.PropTypes.string
-					]),
 			tvmaze: React.PropTypes.oneOfType([
 						React.PropTypes.number,
 						React.PropTypes.string
@@ -111,16 +107,11 @@ const ShowEdit = React.createClass({
 						value={this.state.name}
 						onChange={this.handleChange} />
 
-					<FormInput label="Preferred Keyword(s)" name="pref"
+					<FormInput label="Additional Search Keywords" name="pref"
 						value={this.state.pref}
 						onChange={this.handleChange} />
 
 					<div className="row">
-						<div className="col-xs">
-							<FormInput label="KAT ID" name="kat"
-								value={this.state.kat}
-								onChange={this.handleChange} />
-						</div>
 						<div className="col-xs">
 							<FormInput label="IMDb ID" name="imdb"
 								value={this.state.imdb}

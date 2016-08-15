@@ -17,7 +17,6 @@ const VALID_DATA_TYPES = {
 	name        : "string",
 	image       : "string",
 	imdb        : "string",
-	kat         : "string",
 	nextDate    : "string",
 	nextDateTime: "string",
 	nextURL     : "string",

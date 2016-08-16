@@ -13,23 +13,34 @@ $.getJSON("/api/shows", function(SHOWS) {
 	console.log("Show list received with", SHOWS.length, "shows.")
 
 	var data = []
-	var DAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday","Ended","Pending"]
+	var DAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday","Ended","Future"]
 	DAYS.forEach(function(day, i) {
 		data.push({ name: day, shows: [] })
 	})
 
 	SHOWS.forEach(function(show) {
-		var i = DAYS.indexOf(show.weekday || "Pending")
+		var i = DAYS.indexOf(show.weekday || "Future")
 		if (show.status === "Ended") {
 			i = DAYS.indexOf("Ended")
 		} else if (i === -1 || !show.nextDate || show.status === "In Development" || show.status === "To Be Determined") {
-			i = DAYS.indexOf("Pending")
+			i = DAYS.indexOf("Future")
 		}
 		data[i].shows.push(show)
 	})
 
-	DAYS.pop() // remove "Pending"
-	DAYS.unshift(DAYS.pop()) // move "Sunday" from end to start
+	// Iterate over non-day groups, starting at the end and working backward.
+	for (var i = DAYS.length - 1; i > 6; i--) {
+		// Remove empty non-day data groups.
+		if (data[i].shows.length === 0) {
+			data.splice(i, 1)
+		}
+		// Remove non-day names from the DAYS array...
+		DAYS.pop()
+	}
+
+	// ...and move "Sunday" from end to start because
+	// getDay counts up from Sunday, not Monday.
+	DAYS.unshift(DAYS.pop())
 
 	var date = new Date()
 	var day = date.getDay()

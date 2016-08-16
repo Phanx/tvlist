@@ -12,7 +12,7 @@ const ShowListGroup = React.createClass({
 		setShowToEdit : React.PropTypes.func
 	},
 	onClickHeader: function(event) {
-		var group = event.target.parentNode.parentNode
+		var group = event.target.parentNode
 		console.log("onClickHeader", group.id, this.props.name)
 		// TODO: replace with react css transition group
 		$(group).siblings().each(function() {
@@ -23,17 +23,16 @@ const ShowListGroup = React.createClass({
 		})
 	},
 	render: function() {
-		var contentStyle = (!this.props.selected) ? { display: "none" } : null
-		var showListItems = $.map(this.props.shows, (show, index) => {
+		let empty = this.props.shows.length === 0
+		let contentStyle = (!this.props.selected) ? { display: "none" } : null
+		let showListItems = $.map(this.props.shows, (show, index) => {
 			return (
 				<ShowListItem item={show} key={show.name} setShowToEdit={this.props.setShowToEdit} />
 			)
 		})
 		return (
-			<section className="show-group" id={this.props.name.toLowerCase()}>
-				<header>
-					<h1 onClick={this.onClickHeader}>{this.props.name}</h1>
-				</header>
+			<section className={"show-group" + (empty ? " empty" : "")} id={this.props.name.toLowerCase()}>
+				<h1 onClick={!empty ? this.onClickHeader : null}>{this.props.name}</h1>
 				<div className="content" style={contentStyle}>
 					{showListItems}
 				</div>

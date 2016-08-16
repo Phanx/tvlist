@@ -23,6 +23,7 @@ const ShowListGroup = React.createClass({
 		})
 	},
 	render: function() {
+		let id = this.props.name.toLowerCase()
 		let empty = this.props.shows.length === 0
 		let contentStyle = (!this.props.selected) ? { display: "none" } : null
 		let showListItems = $.map(this.props.shows, (show, index) => {
@@ -31,11 +32,33 @@ const ShowListGroup = React.createClass({
 			)
 		})
 		return (
-			<section className={"show-group" + (empty ? " empty" : "")} id={this.props.name.toLowerCase()}>
-				<h1 onClick={!empty ? this.onClickHeader : null}>{this.props.name}</h1>
-				<div className="content" style={contentStyle}>
+			<section
+				id={id}
+				className={"show-group" + (empty ? " empty" : "")}>
+
+				<h1
+					id={id + "-header"}
+					onClick={!empty ? this.onClickHeader : null}
+					aria-controls={id + "-content"}
+					aria-expanded={this.props.selected}
+					aria-selected={this.props.selected}
+					role="tab">
+
+					{this.props.name}
+
+				</h1>
+
+				<div
+					id={id + "-content"}
+					className="content"
+					style={contentStyle}
+					aria-hidden={!this.props.selected}
+					aria-labelledby={id + "-header"}>
+
 					{showListItems}
+
 				</div>
+
 			</section>
 		)
 	}

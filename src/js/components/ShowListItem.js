@@ -27,8 +27,23 @@ const ShowListItem = React.createClass({
 		}).isRequired,
 		setShowToEdit: React.PropTypes.func
 	},
-	handleRightClick: function(event) {
-		event.preventDefault()
+	handleMouseDown: function(event) {
+		clearTimeout(this.longPressTimer)
+		this.isLongPress = false
+		if (event.button === 0) { // left button
+			this.longPressTimer = setTimeout(() => {
+				this.isLongPress = true
+				this.gotoEdit()
+			}, 1000)
+		}
+	},
+	handleMouseUp: function(event) {
+		clearTimeout(this.longPressTimer)
+		if (event.button === 1) { // middle button
+			this.gotoEdit()
+		}
+	},
+	gotoEdit: function() {
 		this.props.setShowToEdit && this.props.setShowToEdit(this.props.item)
 	},
 	render: function() {
@@ -69,22 +84,22 @@ const ShowListItem = React.createClass({
 		let links = []
 
 		if (show.imdb) {
-			links.push(<li><a className="dl-imdb" href={"http://www.imdb.com/title/" + show.imdb}>IMDb</a></li>)
+			links.push(<li key="imdb"><a className="dl-imdb" href={"http://www.imdb.com/title/" + show.imdb}>IMDb</a></li>)
 		} else {
-			links.push(<li><a className="dl-imdb" href={"http://www.imdb.com/find?q=" + showNameForURL + "&s=tt"}>IMDb</a></li>)
+			links.push(<li key="imdb"><a className="dl-imdb" href={"http://www.imdb.com/find?q=" + showNameForURL + "&s=tt"}>IMDb</a></li>)
 		}
 
 		if (show.tvmaze) {
-			links.push(<li><a className="dl-tvmaze" href={"http://www.tvmaze.com/shows/" + show.tvmaze}>TVMaze</a></li>)
+			links.push(<li key="tvmaze"><a className="dl-tvmaze" href={"http://www.tvmaze.com/shows/" + show.tvmaze}>TVMaze</a></li>)
 		} else {
-			links.push(<li><a className="dl-tvmaze" href={"http://www.tvmaze.com/search?q=" + showNameForURL}>TVMaze</a></li>)
+			links.push(<li key="tvmaze"><a className="dl-tvmaze" href={"http://www.tvmaze.com/search?q=" + showNameForURL}>TVMaze</a></li>)
 		}
 
-		links.push(<li><a className="dl-rarbg" href={"https://rarbg.to/torrents.php?search=" + showNameForURL + prefQuery}>RARBG</a></li>)
+		links.push(<li key="rarbg"><a className="dl-rarbg" href={"https://rarbg.to/torrents.php?search=" + showNameForURL + prefQuery}>RARBG</a></li>)
 
 		return (
 			<article className={classList}>
-				<div className="col-xs-6 col-sm-8" onContextMenu={this.handleRightClick}>
+				<div className="col-xs-6 col-sm-8" onMouseDown={this.handleMouseDown} onMouseUp={this.handleMouseUp}>
 					<h2>{show.name}</h2>
 					<p className="status">{statusText}</p>
 				</div>
@@ -99,4 +114,3 @@ const ShowListItem = React.createClass({
 })
 
 module.exports = ShowListItem
-

@@ -13,14 +13,22 @@ const ShowListGroup = React.createClass({
 	},
 	onClickHeader: function(event) {
 		var group = event.target.parentNode
-		console.log("onClickHeader", group.id, this.props.name)
+		console.log("onClickHeader", group.id, this.props.name, this.props.selected ? "expanded" : "collapsed")
 		// TODO: replace with react css transition group
-		$(group).siblings().each(function() {
-			$(".content", this).slideUp(200)
-		})
-		$(".content", group).slideDown(200, () => {
-			this.props.setExpandedDay && this.props.setExpandedDay(this.props.name)
-		})
+		if (this.props.selected) {
+			// This one is already expanded, just collapse it.
+			$(".content", group).slideUp(200, () => {
+				this.props.setExpandedDay && this.props.setExpandedDay()
+			})
+		} else {
+			// This one isn't expanded yet, collapse all others and expand it.
+			$(group).siblings().each(function() {
+				$(".content", this).slideUp(200)
+			})
+			$(".content", group).slideDown(200, () => {
+				this.props.setExpandedDay && this.props.setExpandedDay(this.props.name)
+			})
+		}
 	},
 	render: function() {
 		let id = this.props.name.toLowerCase()

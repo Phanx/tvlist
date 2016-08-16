@@ -13,20 +13,22 @@ $.getJSON("/api/shows", function(SHOWS) {
 	console.log("Show list received with", SHOWS.length, "shows.")
 
 	var data = []
-	var DAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday","Unknown"]
+	var DAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday","Ended","Pending"]
 	DAYS.forEach(function(day, i) {
 		data.push({ name: day, shows: [] })
 	})
 
 	SHOWS.forEach(function(show) {
-		var i = DAYS.indexOf(show.weekday || "Unknown")
-		if (i === -1 || !show.nextDate || show.status === "In Development" || show.status === "To Be Determined") {
-			i = DAYS.indexOf("Unknown")
+		var i = DAYS.indexOf(show.weekday || "Pending")
+		if (show.status === "Ended") {
+			i = DAYS.indexOf("Ended")
+		} else if (i === -1 || !show.nextDate || show.status === "In Development" || show.status === "To Be Determined") {
+			i = DAYS.indexOf("Pending")
 		}
 		data[i].shows.push(show)
 	})
 
-	DAYS.pop() // remove "Unknown"
+	DAYS.pop() // remove "Pending"
 	DAYS.unshift(DAYS.pop()) // move "Sunday" from end to start
 
 	var date = new Date()

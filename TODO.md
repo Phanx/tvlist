@@ -16,17 +16,9 @@
 - Move next airdate detection into main routine so
   it only has to be calculated once.
 
+    - Move shows whose next airdate is more than 90
+      days in the future to the "Future" section.
+
     - Calculate the weekday if there's an airdate for
       the next episode, but the schedule is missing.
-
-    - Automatically discard ended shows on fetch?
-      **NO.** Add an "Ended" section after "Unknown".
-
-    - Move shows whose next airdate is more than 90
-      days in the future to the "Unknown" section.
-
-    - Rename "Unknown" to "On Break" ?
-
-    - Hide day sections with no shows? Or fade them
-      out so it's obvious they're not clickable.
 

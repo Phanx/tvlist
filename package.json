@@ -1,7 +1,7 @@
 {
-  "name": "tvlist",
+  "name": "phanx-tvlist",
   "version": "0.1.0",
-  "description": "List of TV shows",
+  "description": "TV watch list",
   "author": "Phanx <phanx@protonmail.ch>",
   "license": "Zlib",
   "private": true,
@@ -14,7 +14,6 @@
   "dependencies": {
     "body-parser": "^1.14.2",
     "express": "^4.13.3",
-    "hjs": "0.0.6",
     "lowdb": "^0.12.0"
   },
   "devDependencies": {

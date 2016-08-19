@@ -1,18 +1,6 @@
 const React  = require("react")
 
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
-const ONEDAY = 1000 * 60 * 60 * 24
-
-
-function getDateString(date) {
-	let y = date.getFullYear()
-	let m = date.getUTCMonth() + 1
-	let d = date.getUTCDate()
-	return y + "-" + (m < 10 ? "0" + m : m) + "-" + (d < 10 ? "0" + d : d)
-}
-const TODAYSTRING = getDateString(new Date())
-const TODAY = new Date(TODAYSTRING)
-
 
 const ShowListItem = React.createClass({
 	propTypes: {
@@ -51,20 +39,17 @@ const ShowListItem = React.createClass({
 		let classList = "show row"
 		let statusText
 
-		if (show.nextDate) {
+		if (show.daysToNext === 0) {
+			statusText = "Today"
+		} else if (show.nextDate) {
 			let nextDate = new Date(show.nextDate)
-			let daysToNext = Math.floor((nextDate - TODAY) / ONEDAY)
-			if (daysToNext === 0) {
-				statusText = "Today"
+			let nextDateText = MONTHS[nextDate.getUTCMonth()] + " " + nextDate.getUTCDate()
+			if (show.daysToNext <= 7) {
+				statusText = "Next " + nextDateText // + " (" + daysToNext + " days)"
 			} else {
-				let nextDateText = MONTHS[nextDate.getUTCMonth()] + " " + nextDate.getUTCDate()
-				if (daysToNext <= 7) {
-					statusText = "Next " + nextDateText // + " (" + daysToNext + " days)"
-				} else {
-					classList += " afk"
-					statusText  = ((show.nextDate == show.premiered) ? "Starts" : "Returns")
-						+ " " + nextDateText
-				}
+				classList += " afk"
+				statusText  = ((show.nextDate == show.premiered) ? "Starts" : "Returns")
+					+ " " + nextDateText // + " (" + daysToNext + " days)"
 			}
 		} else {
 			classList += " afk"

@@ -12,6 +12,18 @@ console.log("Fetching show list...")
 $.getJSON("/api/shows", function(SHOWS) {
 	console.log("Show list received with", SHOWS.length, "shows.")
 
+	function getDateString(date) {
+		let y = date.getFullYear()
+		let m = date.getUTCMonth() + 1
+		let d = date.getUTCDate()
+		return y + "-" + (m < 10 ? "0" + m : m) + "-" + (d < 10 ? "0" + d : d)
+	}
+
+	const TODAYSTRING = getDateString(new Date())
+	const TODAY = new Date(TODAYSTRING)
+	const ONEDAY = 1000 * 60 * 60 * 24
+
+
 	var data = []
 	var DAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday","Ended","Future"]
 	DAYS.forEach(function(day, i) {
@@ -25,6 +37,17 @@ $.getJSON("/api/shows", function(SHOWS) {
 		} else if (i === -1 || !show.nextDate || show.status === "In Development" || show.status === "To Be Determined") {
 			i = DAYS.indexOf("Future")
 		}
+
+
+		if (show.nextDate) {
+			let nextDate = new Date(show.nextDate)
+			show.daysToNext = Math.floor((nextDate - TODAY) / ONEDAY)
+			if (show.daysToNext > 30) {
+				i = DAYS.indexOf("Future")
+			}
+		}
+
+
 		data[i].shows.push(show)
 	})
 

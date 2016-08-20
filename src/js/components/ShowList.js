@@ -1,5 +1,4 @@
 const React = require("react")
-const $ = require("jquery")
 
 const ShowEdit = require("./ShowEdit")
 const ShowListGroup = require("./ShowListGroup")
@@ -36,8 +35,9 @@ const ShowList = React.createClass({
 					whenDoneEditing={this.setShowToEdit} />
 			)
 		} else {
-			var showGroups = $.map(this.props.data, (day) => {
-				return (
+			let showGroups = []
+			this.props.data.forEach((day) => {
+				showGroups.push(
 					<ShowListGroup
 						key={day.name}
 						name={day.name}

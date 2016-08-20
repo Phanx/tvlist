@@ -39,7 +39,7 @@ const ShowEdit = React.createClass({
 		let changes = {}
 		Object.keys(this.state).forEach((key) => {
 			const oldValue = (this.props.item[key] || "").toString()
-			const newValue = this.state[key].toString()
+			const newValue = (this.state[key] || "").toString()
 			if (oldValue !== newValue) {
 				changes[key] = newValue
 			}

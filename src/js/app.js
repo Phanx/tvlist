@@ -30,6 +30,9 @@ $.getJSON("/api/shows", function(SHOWS) {
 		data.push({ name: day, shows: [] })
 	})
 
+	SHOWS.sort(function(a, b) {
+		return a.name.toLowerCase().replace(/^the /, '') > b.name.toLowerCase().replace(/^the /, '')
+	})
 	SHOWS.forEach(function(show) {
 		var i = DAYS.indexOf(show.weekday || "Future")
 		if (show.status === "Ended") {

@@ -4,10 +4,6 @@ const $ = require("jquery")
 const ShowEdit = require("./ShowEdit")
 const ShowListGroup = require("./ShowListGroup")
 
-function sortByName(a, b) {
-	return a.name.toLowerCase().replace(/^the /, '') > b.name.toLowerCase().replace(/^the /, '')
-}
-
 const ShowList = React.createClass({
 	propTypes: {
 		data      : React.PropTypes.array.isRequired,
@@ -46,7 +42,7 @@ const ShowList = React.createClass({
 					<ShowListGroup
 						key={day.name}
 						name={day.name}
-						shows={day.shows.sort(sortByName)}
+						shows={day.shows}
 						selected={day.name === this.state.expandedDay}
 						setExpandedDay={this.setExpandedDay}
 						setShowToEdit={this.setShowToEdit} />

@@ -17,12 +17,11 @@ const ShowList = React.createClass({
 		}
 	},
 	setExpandedDay: function(day) {
-		console.log("setExpandedDay", day)
 		this.setState({ expandedDay: day })
 	},
 	setShowToEdit: function(show) {
-		console.log("setShowToEdit", show)
 		if (show === "REFRESH") {
+			// TODO: refresh in-place so the expanded day is preserved
 			document.location.reload(true)
 		} else {
 			this.setState({ editingShow: show || false })

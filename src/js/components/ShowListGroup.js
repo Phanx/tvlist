@@ -13,7 +13,6 @@ const ShowListGroup = React.createClass({
 	},
 	onClickHeader: function(event) {
 		var group = event.target.parentNode
-		console.log("onClickHeader", group.id, this.props.name, this.props.selected ? "expanded" : "collapsed")
 		// TODO: replace with react css transition group
 		if (this.props.selected) {
 			// This one is already expanded, just collapse it.

@@ -1,8 +1,10 @@
-var React = require("react")
-var ReactDOM = require("react-dom")
-var $ = require("jquery")
-var LoadingDots = require("./components/LoadingDots")
-var ShowList = require("./components/ShowList")
+const React = require("react")
+const ReactDOM = require("react-dom")
+
+const LoadingDots = require("./components/LoadingDots")
+const ShowList = require("./components/ShowList")
+
+const $ = require("jquery")
 
 // Collect all the data from the TVMaze API, join it together,
 // sort it, and pass it off to the renderer.
@@ -24,8 +26,8 @@ $.getJSON("/api/shows", function(SHOWS) {
 	const ONEDAY = 1000 * 60 * 60 * 24
 
 
-	var data = []
-	var DAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday","Ended","Future"]
+	let data = []
+	let DAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday","Ended","Future"]
 	DAYS.forEach(function(day, i) {
 		data.push({ name: day, shows: [] })
 	})
@@ -34,7 +36,7 @@ $.getJSON("/api/shows", function(SHOWS) {
 		return a.name.toLowerCase().replace(/^the /, '') > b.name.toLowerCase().replace(/^the /, '')
 	})
 	SHOWS.forEach(function(show) {
-		var i = DAYS.indexOf(show.weekday || "Future")
+		let i = DAYS.indexOf(show.weekday || "Future")
 		if (show.status === "Ended") {
 			i = DAYS.indexOf("Ended")
 		} else if (i === -1 || !show.nextDate || show.status === "In Development" || show.status === "To Be Determined") {
@@ -68,8 +70,8 @@ $.getJSON("/api/shows", function(SHOWS) {
 	// getDay counts up from Sunday, not Monday.
 	DAYS.unshift(DAYS.pop())
 
-	var date = new Date()
-	var day = date.getDay()
+	let date = new Date()
+	let day = date.getDay()
 	if (date.getHours() < 17) {
 		// Before 9 PM, show yesterday instead of today
 		day = (day > 0) ? (day - 1) : (DAYS.length - 1)

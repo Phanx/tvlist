@@ -50,6 +50,7 @@ const ShowList = React.createClass({
 			return (
 				<section className="show-list" id={this.props.id} role="tablist">
 					{showGroups}
+					<button className="fab" id="fab-addshow">Add Show</button>
 				</section>
 			)
 		}

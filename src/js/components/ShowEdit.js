@@ -5,6 +5,7 @@ const FormInput = require("./FormInput")
 
 const ShowEdit = React.createClass({
 	propTypes: {
+		callback: React.PropTypes.func,
 		item: React.PropTypes.shape({
 			name  : React.PropTypes.string.isRequired,
 			pref  : React.PropTypes.string,
@@ -13,8 +14,7 @@ const ShowEdit = React.createClass({
 						React.PropTypes.number,
 						React.PropTypes.string
 					])
-		}).isRequired,
-		whenDoneEditing: React.PropTypes.func
+		}).isRequired
 	},
 	getInitialState: function() {
 		const state = {
@@ -59,7 +59,7 @@ const ShowEdit = React.createClass({
 			.done((data, textStatus, jqXHR) => {
 				// Pass back up the chain
 				console.log("submission succeeded:", this.props.item.name, data)
-				this.props.whenDoneEditing && this.props.whenDoneEditing("REFRESH")
+				this.props.callback && this.props.callback("REFRESH")
 			})
 			.fail((jqXHR, textStatus, errorThrown) => {
 				console.log("submission failed:", this.props.item.name, textStatus, errorThrown)
@@ -70,7 +70,7 @@ const ShowEdit = React.createClass({
 	handleCancel: function(event) {
 		event.preventDefault()
 		// Pass back up the chain
-		this.props.whenDoneEditing && this.props.whenDoneEditing()
+		this.props.callback && this.props.callback()
 	},
 	handleDeleteConfirm: function(event) {
 		this.setState({ canDelete: event.target.checked })
@@ -89,7 +89,7 @@ const ShowEdit = React.createClass({
 			.done((data, textStatus, jqXHR) => {
 				// Pass back up the chain
 				console.log("submission succeeded:", this.props.item.name, data)
-				this.props.whenDoneEditing && this.props.whenDoneEditing("REFRESH")
+				this.props.callback && this.props.callback("REFRESH")
 			})
 			.fail((jqXHR, textStatus, errorThrown) => {
 				console.log("submission failed:", this.props.item.name, textStatus, errorThrown)

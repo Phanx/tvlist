@@ -11,8 +11,6 @@
 - Calculate the weekday if there's an airdate for
   the next episode, but the schedule is missing.
 
-- Implement a UI for the addshow API.
-
 - Move link patterns into the db instead of hardcoding.
 
 - Add epguides.com links? (How to find?)

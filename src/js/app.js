@@ -2,6 +2,7 @@ const React    = require("react")
 const ReactDOM = require("react-dom")
 
 const LoadingDots = require("./components/LoadingDots")
+const ShowAdd     = require("./components/ShowAdd")
 const ShowEdit    = require("./components/ShowEdit")
 const ShowList    = require("./components/ShowList")
 
@@ -92,12 +93,17 @@ const ShowListController = React.createClass({
 		this.setState({ expandedDay: day })
 	},
 	setShowToEdit: function(show) {
+		console.log("setShowToEdit", show)
 		if (show === "REFRESH") {
 			this.setState({
 				editingShow: undefined,
 				showData: []
 			})
 			this.fetchShowData()
+		} else if (show === "ADD") {
+			this.setState({
+				editingShow: true
+			})
 		} else {
 			this.setState({
 				editingShow: show || undefined
@@ -110,6 +116,11 @@ const ShowListController = React.createClass({
 	render: function() {
 		if (!this.state.showData.length) {
 			return <LoadingDots />
+		} else if (this.state.editingShow === true) {
+			return (
+				<ShowAdd
+					callback={this.setShowToEdit} />
+			)
 		} else if (this.state.editingShow) {
 			return (
 				<ShowEdit

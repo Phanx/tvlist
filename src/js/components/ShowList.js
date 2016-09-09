@@ -10,6 +10,10 @@ const ShowList = React.createClass({
 		setShowToEdit : React.PropTypes.func.isRequired,
 		showData      : React.PropTypes.array.isRequired
 	},
+	onClickAddButton: function() {
+		console.log("Clicked add button")
+		this.props.setShowToEdit("ADD")
+	},
 	render: function() {
 		let showGroups = this.props.showData.map(day => {
 			return (
@@ -25,7 +29,7 @@ const ShowList = React.createClass({
 		return (
 			<section className="show-list" id={this.props.id} role="tablist">
 				{showGroups}
-				<button className="fab" id="fab-addshow">Add Show</button>
+				<button className="fab" id="fab-addshow" onClick={this.onClickAddButton}>Add Show</button>
 			</section>
 		)
 	}

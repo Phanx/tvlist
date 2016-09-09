@@ -56,7 +56,7 @@ const ShowListController = React.createClass({
 					let i = DAYS.indexOf(show.weekday || "Future")
 					if (show.status === "Ended") {
 						i = DAYS.indexOf("Ended")
-					} else if (i === -1 || !show.nextDate || show.status === "In Development" || show.status === "To Be Determined") {
+					} else if (i === -1 || !show.nextDate || show.status === "To Be Determined") {
 						i = DAYS.indexOf("Future")
 					}
 

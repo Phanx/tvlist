@@ -191,13 +191,13 @@ function addShow(req, res) {
 				})
 			})
 		} else {
-			return res.status(200).json({
+			return res.status(409).json({
 				error: "Show already added.",
 				show: found
 			})
 		}
 	} else {
-		return res.status(200).json({
+		return res.status(400).json({
 			error: "Show name not specified."
 		})
 	}
@@ -211,7 +211,7 @@ router.post("/editshow", (req, res) => {
 	const changes = req.body.changes
 	console.log("/editshow", name, changes)
 	if (typeof(name) !== "string") {
-		return res.status(200).json({ error: "Show name not specified." })
+		return res.status(400).json({ error: "Show name not specified." })
 	}
 	if (typeof(changes) !== "object" || changes == null || Object.keys(changes).length === 0) {
 		return res.status(200).json({ error: "No changes specified." })
@@ -238,7 +238,7 @@ router.post("/editshow", (req, res) => {
 router.post("/deleteshow", (req, res) => {
 	const name = req.body.name
 	if (typeof(name) === "undefined") {
-		return res.status(200).json({ error: "Show name not specified." })
+		return res.status(400).json({ error: "Show name not specified." })
 	}
 	console.log("Received request to delete show: " + name)
 	db("shows").remove({ name: name })

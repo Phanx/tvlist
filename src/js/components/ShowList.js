@@ -11,7 +11,6 @@ const ShowList = React.createClass({
 		showData      : React.PropTypes.array.isRequired
 	},
 	onClickAddButton: function() {
-		console.log("Clicked add button")
 		this.props.setShowToEdit("ADD")
 	},
 	render: function() {

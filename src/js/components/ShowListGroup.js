@@ -32,7 +32,7 @@ const ShowListGroup = React.createClass({
 	render: function() {
 		let id = this.props.name.toLowerCase()
 		let empty = this.props.shows.length === 0
-		let contentStyle = (!this.props.selected) ? { display: "none" } : null
+		let contentStyle = (empty || !this.props.selected) ? { display: "none" } : null
 		let showListItems = $.map(this.props.shows, (show, index) => {
 			return (
 				<ShowListItem item={show} key={show.name} setShowToEdit={this.props.setShowToEdit} />
@@ -57,9 +57,9 @@ const ShowListGroup = React.createClass({
 
 				<div
 					id={id + "-content"}
-					className="content"
+					className="content row"
 					style={contentStyle}
-					aria-hidden={!this.props.selected}
+					aria-hidden={empty || !this.props.selected}
 					aria-labelledby={id + "-header"}>
 
 					{showListItems}

@@ -36,32 +36,41 @@ const ShowListItem = React.createClass({
 	},
 	render: function() {
 		let show = this.props.item
-		let classList = "show row"
-		let statusText
+		let classList = "show"
 
+		let title = show.name
+		if (show.image) {
+			title = <img alt={show.name} title={show.name} src={show.image} />
+		}
+
+
+		let statusText
 		if (show.daysToNext === 0) {
-			statusText = "Today"
+			//statusText = <p className="status">Today</p>
 		} else if (show.nextDate) {
 			let nextDate = new Date(show.nextDate)
 			let nextDateText = MONTHS[nextDate.getUTCMonth()] + " " + nextDate.getUTCDate()
 			if (show.daysToNext <= 7) {
-				statusText = "Next " + nextDateText // + " (" + daysToNext + " days)"
+				statusText = (
+					<p className="status">
+						<span className="visuallyhidden">Next</span>
+						<date datetime={nextDate.toISOString()}>{nextDateText}</date>
+					</p>
+				)
 			} else {
 				classList += " afk"
-				statusText  = ((show.nextDate == show.premiered) ? "Starts" : "Returns")
-					+ " " + nextDateText // + " (" + daysToNext + " days)"
+				statusText = (
+					<p className="status">
+						<span className="visuallyhidden">{show.nextDate == show.premiered ? "Starts" : "Returns"}</span>
+						<date datetime={nextDate.toISOString()}>{nextDateText}</date>
+					</p>
+				)
 			}
 		} else {
 			classList += " afk"
-			statusText = (show.status === "Running" || show.status === "To Be Determined")
-				? "On Break" : show.status
+			//statusText = (show.status === "Running" || show.status === "To Be Determined") ? "On Break" : show.status
 		}
 
-		// Don't show ended shows; TODO: prune them on fetch
-		// Leave them in for now -- TODO: add UI for removing manually
-		/*if (statusText === "Ended") {
-			return false
-		}*/
 
 		let showNameForURL = encodeURIComponent(show.name.toLowerCase().replace(/[^\w\s]/g, " ").replace(/\s\s+/g, " "))
 		let prefQuery = show.pref ? " " + show.pref : ""
@@ -83,16 +92,15 @@ const ShowListItem = React.createClass({
 		links.push(<li key="rarbg"><a className="dl-rarbg" href={"https://rarbg.to/torrents.php?search=" + showNameForURL + prefQuery}>RARBG</a></li>)
 
 		return (
-			<article className={classList}>
-				<div className="col-xs-6 col-sm-8" onMouseDown={this.handleMouseDown} onMouseUp={this.handleMouseUp}>
-					<h2>{show.name}</h2>
-					<p className="status">{statusText}</p>
-				</div>
-				<div className="col-xs-6 col-sm-4">
-					<ul className="dl-list">
-						{links}
-					</ul>
-				</div>
+			<article className={"col-xs-4 col-sm-3 col-md-2 col-lg-1 " + classList}
+				 onMouseDown={this.handleMouseDown} onMouseUp={this.handleMouseUp}>
+				<h2 className="title">
+					{title}
+				</h2>
+				{statusText}
+				<ul className="dl-list" onMouseDown={(e) => { e.stopPropagation() }} onMouseUp={() => { e.stopPropagation() }}>
+					{links}
+				</ul>
 			</article>
 		)
 	}

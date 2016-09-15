@@ -16,6 +16,9 @@ const ShowListItem = React.createClass({
 		setShowToEdit: React.PropTypes.func
 	},
 	handleMouseDown: function(event) {
+		if (event.target.tagName === "a") {
+			return
+		}
 		clearTimeout(this.longPressTimer)
 		this.isLongPress = false
 		if (event.button === 0) { // left button
@@ -26,6 +29,9 @@ const ShowListItem = React.createClass({
 		}
 	},
 	handleMouseUp: function(event) {
+		if (event.target.tagName.toLowerCase() === "a") {
+			return
+		}
 		clearTimeout(this.longPressTimer)
 		if (event.button === 1) { // middle button
 			this.gotoEdit()
@@ -54,7 +60,7 @@ const ShowListItem = React.createClass({
 				statusText = (
 					<p className="status">
 						<span className="visuallyhidden">Next</span>
-						<date datetime={nextDate.toISOString()}>{nextDateText}</date>
+						<date dateTime={nextDate.toISOString()}>{nextDateText}</date>
 					</p>
 				)
 			} else {
@@ -62,7 +68,7 @@ const ShowListItem = React.createClass({
 				statusText = (
 					<p className="status">
 						<span className="visuallyhidden">{show.nextDate == show.premiered ? "Starts" : "Returns"}</span>
-						<date datetime={nextDate.toISOString()}>{nextDateText}</date>
+						<date dateTime={nextDate.toISOString()}>{nextDateText}</date>
 					</p>
 				)
 			}
@@ -98,7 +104,7 @@ const ShowListItem = React.createClass({
 					{title}
 				</h2>
 				{statusText}
-				<ul className="dl-list" onMouseDown={(e) => { e.stopPropagation() }} onMouseUp={() => { e.stopPropagation() }}>
+				<ul className="dl-list">
 					{links}
 				</ul>
 			</article>

@@ -5,9 +5,9 @@ const http      = require("http")
 
 // Set up the DB
 const lowdb     = require("lowdb")
-const dbStorage = require("lowdb/file-async")
 const dbFile    = require("path").resolve(__dirname, "data/db.json")
-const db        = lowdb(dbFile, { storage: dbStorage })
+const db        = lowdb(dbFile, { storage: require("lowdb/lib/file-async") })
+const shows     = db.get("shows")
 
 // Useful constants
 const UPDATE_INTERVAL = 3 * 24 * 60 * 60 * 1000
@@ -74,22 +74,22 @@ function getJSON(url, callback, name) {
 
 // Send list of tracked shows
 router.get("/shows", (req, res) => {
-	const shows = db("shows")
 	const showsCount = shows.size()
 	// console.log("Tracking " + showsCount + " shows.")
 
 	// Populate with defaults on first run
 	if (showsCount === 0) {
 		const defaults = require("./data/shows.json")
+		// console.log("Initializing with defaults...")
 		defaults.forEach((name) => {
-			shows.push({ name: name })
+			shows.push({ name: name }).value()
 		})
 	}
 
 	// Fetch show details from TVmaze API
 	let waiting = showsCount
 
-	shows.forEach((show) => {
+	shows.value().forEach((show) => {
 		const lastUpdated = new Date(show.updated || 0)
 		const nextEpisode = show.nextDate ? new Date(show.nextDate) : TODAY
 		if (
@@ -121,15 +121,14 @@ router.get("/shows", (req, res) => {
 
 	function processDataForShow(showName, showData) {
 		if (!showData || showData.status === 404) {
-			console.log("No data for show:", showName)
+			// console.log("No data for show:", showName)
 			if (showData && showData.status === 404) {
-				console.log("Bad TVmaze ID for show:", showName)
-				db("shows")
-					.chain()
+				// console.log("Bad TVmaze ID for show:", showName)
+				const show = shows
 					.find({ name: showName })
 					.assign({ tvmaze: undefined })
 					.value()
-				fetchDataForShow(db("shows").find({ name: showName }))
+				fetchDataForShow(show)
 			}
 			return useDataForShow(showName)
 		} else if (showData._links && showData._links.nextepisode) {
@@ -145,30 +144,28 @@ router.get("/shows", (req, res) => {
 
 	function useDataForShow(showName, showData, epData) {
 		if (typeof(showData) !== "undefined") {
-			db("shows")
-			.chain()
-			.find({ name: showName })
-			.assign({
-				image       : showData.image ? showData.image.medium : undefined,
-				imdb        : showData.externals.imdb,
-				nextDate    : epData ? epData.airdate : undefined,
-				nextDateTime: epData ? epData.airstamp : undefined,
-				nextURL     : epData ? epData._links.self.href : undefined,
-				premiered   : showData.premiered,
-				status      : showData.status,
-				tvmaze      : showData.id,
-				url         : showData._links.self.href,
-				updated     : NOW,
-				weekday     : showData.schedule.days[0]
-			})
-			.value()
+			shows.find({ name: showName })
+				.assign({
+					image       : showData.image ? showData.image.medium : undefined,
+					imdb        : showData.externals.imdb,
+					nextDate    : epData ? epData.airdate : undefined,
+					nextDateTime: epData ? epData.airstamp : undefined,
+					nextURL     : epData ? epData._links.self.href : undefined,
+					premiered   : showData.premiered,
+					status      : showData.status,
+					tvmaze      : showData.id,
+					url         : showData._links.self.href,
+					updated     : NOW,
+					weekday     : showData.schedule.days[0]
+				})
+				.value()
 		}
 
 		waiting --
 		// console.log("Waiting on data for", waiting, "shows.")
 		if (waiting === 0) {
 			// console.log("All data received.")
-			return res.status(200).json(db("shows"))
+			return res.status(200).json(shows.value())
 		}
 	}
 })
@@ -178,17 +175,16 @@ router.get("/shows", (req, res) => {
 function addShow(req, res) {
 	const name = req.query && req.query.name || req.body && req.body.name
 	if (typeof(name) === "string") {
-		console.log("Received request to add show: " + name)
-		const found = db("shows").find({ name: name })
+		// console.log("Received request to add show: " + name)
+		const found = shows.find({ name: name })
 		if (typeof(found) === "undefined") {
-			db("shows")
-			.push({ name: name })
-			.then((show) => {
-				// TODO: fetch data for it now
-				return res.status(200).json({
-					message: "Show added!",
-					show: show
-				})
+			shows.push({ name: name }).value()
+
+			// TODO: fetch data for it now
+
+			return res.status(200).json({
+				message: "Show added!",
+				show: show
 			})
 		} else {
 			return res.status(409).json({
@@ -209,7 +205,7 @@ router.post("/addshow", addShow)
 router.post("/editshow", (req, res) => {
 	const name = req.body.name
 	const changes = req.body.changes
-	console.log("/editshow", name, changes)
+	// console.log("/editshow", name, changes)
 	if (typeof(name) !== "string") {
 		return res.status(400).json({ error: "Show name not specified." })
 	}
@@ -221,13 +217,11 @@ router.post("/editshow", (req, res) => {
 		// TODO: use empty string to delete?
 		// TODO: send list of dropped properties with response?
 		if (v == null || VALID_DATA_TYPES[k] == null || typeof(v) !== typeof(VALID_DATA_TYPES[k])) {
-			console.log("Dropping invalid property:", k, v, typeof(v), typeof(VALID_DATA_TYPES[k]))
+			// console.log("Dropping invalid property:", k, v, typeof(v), typeof(VALID_DATA_TYPES[k]))
 			delete changes[k]
 		}
 	})
-	db("shows")
-		.chain()
-		.find({ name: name })
+	shows.find({ name: name })
 		.assign(changes)
 		.value()
 	return res.status(200).json({ message: "Changes saved." })
@@ -240,8 +234,8 @@ router.post("/deleteshow", (req, res) => {
 	if (typeof(name) === "undefined") {
 		return res.status(400).json({ error: "Show name not specified." })
 	}
-	console.log("Received request to delete show: " + name)
-	db("shows").remove({ name: name })
+	// console.log("Received request to delete show: " + name)
+	shows.remove({ name: name }).value()
 	return res.status(200).json({ message: "Show deleted." })
 })
 

@@ -99,7 +99,6 @@ gulp.task("watch-css", ["build-css"], function() {
 //		JS
 //  ===================================================== //
 
-const assign     = require("lodash.assign")
 const babelify   = require("babelify")
 const browserify = require("browserify")
 const buffer     = require("vinyl-buffer")
@@ -126,7 +125,7 @@ gulp.task("build-js", function() {
 })
 
 gulp.task("watch-js", function() {
-	var bw = watchify(browserify(config.dirs.src + "/js/app.js", assign({}, watchify.args, config.browserify)))
+	var bw = watchify(browserify(config.dirs.src + "/js/app.js", Object.assign({}, watchify.args, config.browserify)))
 		bw.transform(babelify, config.babelify)
 		//b.transform(uglifyify, config.uglifyify)
 		bw.on("update", buildify)

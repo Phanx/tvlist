@@ -35,7 +35,7 @@ const ShowListController = React.createClass({
 		const req = new XMLHttpRequest()
 		req.open("GET", "/api/shows", true)
 		req.onload = () => {
-			if (req.status >= 200 && req.status < 400) {
+			if (req.status === 200) {
 				const SHOWS = JSON.parse(req.responseText)
 				console.log("Show list received with", SHOWS.length, "shows.")
 
@@ -49,7 +49,7 @@ const ShowListController = React.createClass({
 				})
 
 				SHOWS.sort(function(a, b) {
-					return a.name.toLowerCase().replace(/^the /, '') > b.name.toLowerCase().replace(/^the /, '')
+					return a.name.toLowerCase().replace(/^the /, '').localeCompare(b.name.toLowerCase().replace(/^the /, ''))
 				})
 				SHOWS.forEach(function(show) {
 					let i = DAYS.indexOf(show.weekday || "Future")

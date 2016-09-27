@@ -50,7 +50,7 @@ const ShowAdd = React.createClass({
 			req.onerror = () => {
 				console.log("connection error:", req.status)
 				this.setState({
-					submitting: true,
+					submitting: false,
 					error: "Connection error!"
 				})
 			}
@@ -68,7 +68,7 @@ const ShowAdd = React.createClass({
 			<section id="editor">
 				<h1>Add Show</h1>
 
-				<form onSubmit={this.handleSubmit} onCancel={this.handleCancel}>
+				<form onSubmit={this.handleSubmit}>
 					<FormInput label="Show Name" name="name"
 						value={this.state.name}
 						onChange={this.handleChange} />

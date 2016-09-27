@@ -1,9 +1,11 @@
-[
-    "The Blacklist",
-    "Bosch",
-    "Chicago PD",
-    "Daredevil",
-    "Hawaii Five-0",
-    "Law and Order SVU",
-    "The Punisher"
-]
+{
+	"shows": [
+		{ "name": "The Blacklist" },
+		{ "name": "Bosch" },
+		{ "name": "Chicago PD" },
+		{ "name": "Daredevil" },
+		{ "name": "Hawaii Five-0" },
+		{ "name": "Law and Order SVU" },
+		{ "name": "The Punisher" }
+	]
+}

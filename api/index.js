@@ -1,45 +1,22 @@
 "use strict"
 
 const router    = require("express").Router()
-const http      = require("http")
 
-// Set up the DB
-const lowdb     = require("lowdb")
-const dbFile    = require("path").resolve(__dirname, "data/db.json")
-const db        = lowdb(dbFile, { storage: require("lowdb/lib/file-async") })
-const shows     = db.get("shows")
+router.use("/addshow",    require("./add"))
+router.use("/editshow",   require("./edit"))
+router.use("/deleteshow", require("./delete"))
 
-// Useful constants
-const UPDATE_INTERVAL = 3 * 24 * 60 * 60 * 1000
+// -----------------------------------------------------------------------------
+// Send list of tracked shows
+//
+
+const http  = require("http")
+const shows = require("./db").get("shows")
+
 const REQUEST_TIMEOUT = 3000
+const UPDATE_INTERVAL = 3 * 24 * 60 * 60 * 1000
 
-const VALID_DATA_TYPES = {
-	name        : "string",
-	image       : "string",
-	imdb        : "string",
-	nextDate    : "string",
-	nextDateTime: "string",
-	nextURL     : "string",
-	premiered   : "string",
-	status      : "string",
-	tvmaze      : "number",
-	url         : "string",
-	updated     : "string",
-	weekday     : "string",
-	pref        : "string"
-}
-
-function getDateString(date) {
-	const m = date.getMonth() + 1
-	const d = date.getDate()
-	return date.getFullYear() + "-" + (m < 10 ? "0" + m : m) + "-" + (d < 10 ? "0" + d : d)
-}
-const NOW = new Date()
-const TODAY = new Date(getDateString(NOW))
-
-
-// HTTP GET request helper
-function getJSON(url, callback, name) {
+const getJSON = function(url, callback, name) {
 	// name = name ? name : "<unnamed request>"
 	let data = ""
 	const req = http.get(url, (res) => {
@@ -71,20 +48,18 @@ function getJSON(url, callback, name) {
 	})
 }
 
+const getDateString = function(date) {
+	const m = date.getMonth() + 1
+	const d = date.getDate()
+	return date.getFullYear() + "-" + (m < 10 ? "0" + m : m) + "-" + (d < 10 ? "0" + d : d)
+}
 
-// Send list of tracked shows
+const NOW   = new Date()
+const TODAY = new Date(getDateString(NOW))
+
 router.get("/shows", (req, res) => {
 	const showsCount = shows.size()
-	// console.log("Tracking " + showsCount + " shows.")
-
-	// Populate with defaults on first run
-	if (showsCount === 0) {
-		const defaults = require("./data/shows.json")
-		// console.log("Initializing with defaults...")
-		defaults.forEach((name) => {
-			shows.push({ name: name }).value()
-		})
-	}
+	console.log("Tracking " + showsCount + " shows.")
 
 	// Fetch show details from TVmaze API
 	let waiting = showsCount
@@ -97,10 +72,10 @@ router.get("/shows", (req, res) => {
 			|| (nextEpisode && (TODAY > nextEpisode))
 			|| req.query.force
 		) {
-			// console.log("Getting fresh data for show:", show.name)
+			console.log("Getting fresh data for show:", show.name)
 			fetchDataForShow(show)
 		} else {
-			// console.log("Using cached data for show:", show.name)
+			console.log("Using cached data for show:", show.name)
 			useDataForShow(show.name)
 		}
 	})
@@ -113,7 +88,7 @@ router.get("/shows", (req, res) => {
 			// ^ Doesn't work for most "in development" shows
 			: "http://api.tvmaze.com/singlesearch/shows?q=" + encodeURIComponent(showName)
 
-		// console.log("Fetching data for show:", showName, url)
+		console.log("Fetching data for show:", showName, url)
 		getJSON(url, (showData, errorText) => {
 			processDataForShow(showName, showData)
 		}, "show " + showName)
@@ -121,9 +96,9 @@ router.get("/shows", (req, res) => {
 
 	function processDataForShow(showName, showData) {
 		if (!showData || showData.status === 404) {
-			// console.log("No data for show:", showName)
+			console.log("No data for show:", showName)
 			if (showData && showData.status === 404) {
-				// console.log("Bad TVmaze ID for show:", showName)
+				console.log("Bad TVmaze ID for show:", showName)
 				const show = shows
 					.find({ name: showName })
 					.assign({ tvmaze: undefined })
@@ -132,12 +107,12 @@ router.get("/shows", (req, res) => {
 			}
 			return useDataForShow(showName)
 		} else if (showData._links && showData._links.nextepisode) {
-			// console.log("Fetching data for next episode:", showName, showData._links.nextepisode.href)
+			console.log("Fetching data for next episode:", showName, showData._links.nextepisode.href)
 			getJSON(showData._links.nextepisode.href, (epData, errText) => {
 				useDataForShow(showName, showData, epData)
 			}, "episode " + showName)
 		} else {
-			// console.log("No next episode for show:", showName)
+			console.log("No next episode for show:", showName)
 			return useDataForShow(showName, showData)
 		}
 	}
@@ -162,83 +137,13 @@ router.get("/shows", (req, res) => {
 		}
 
 		waiting --
-		// console.log("Waiting on data for", waiting, "shows.")
+		console.log("Waiting on data for", waiting, "shows.")
 		if (waiting === 0) {
-			// console.log("All data received.")
+			console.log("All data received.")
 			return res.status(200).json(shows.value())
 		}
 	}
 })
-
-
-// Add new show to be tracked
-function addShow(req, res) {
-	const name = req.query && req.query.name || req.body && req.body.name
-	if (typeof(name) === "string") {
-		// console.log("Received request to add show: " + name)
-		const found = shows.find({ name: name })
-		if (typeof(found) === "undefined") {
-			shows.push({ name: name }).value()
-
-			// TODO: fetch data for it now
-
-			return res.status(200).json({
-				message: "Show added!",
-				show: show
-			})
-		} else {
-			return res.status(409).json({
-				error: "Show already added.",
-				show: found
-			})
-		}
-	} else {
-		return res.status(400).json({
-			error: "Show name not specified."
-		})
-	}
-}
-router.get("/addshow", addShow)
-router.post("/addshow", addShow)
-
-// Update a show
-router.post("/editshow", (req, res) => {
-	const name = req.body.name
-	const changes = req.body.changes
-	// console.log("/editshow", name, changes)
-	if (typeof(name) !== "string") {
-		return res.status(400).json({ error: "Show name not specified." })
-	}
-	if (typeof(changes) !== "object" || changes == null || Object.keys(changes).length === 0) {
-		return res.status(200).json({ error: "No changes specified." })
-	}
-	Object.keys(changes).forEach((k) => {
-		let v = changes[k]
-		// TODO: use empty string to delete?
-		// TODO: send list of dropped properties with response?
-		if (v == null || VALID_DATA_TYPES[k] == null || typeof(v) !== typeof(VALID_DATA_TYPES[k])) {
-			// console.log("Dropping invalid property:", k, v, typeof(v), typeof(VALID_DATA_TYPES[k]))
-			delete changes[k]
-		}
-	})
-	shows.find({ name: name })
-		.assign(changes)
-		.value()
-	return res.status(200).json({ message: "Changes saved." })
-})
-
-
-// Delete a show
-router.post("/deleteshow", (req, res) => {
-	const name = req.body.name
-	if (typeof(name) === "undefined") {
-		return res.status(400).json({ error: "Show name not specified." })
-	}
-	// console.log("Received request to delete show: " + name)
-	shows.remove({ name: name }).value()
-	return res.status(200).json({ message: "Show deleted." })
-})
-
 
 // EOF
 module.exports = router

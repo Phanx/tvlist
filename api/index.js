@@ -121,17 +121,17 @@ router.get("/shows", (req, res) => {
 		if (typeof(showData) !== "undefined") {
 			shows.find({ name: showName })
 				.assign({
-					image       : showData.image ? showData.image.medium : undefined,
-					imdb        : showData.externals.imdb,
-					nextDate    : epData ? epData.airdate : undefined,
-					nextDateTime: epData ? epData.airstamp : undefined,
-					nextURL     : epData ? epData._links.self.href : undefined,
+					image       : showData.image && showData.image.medium,
+					imdb        : showData.externals && showData.externals.imdb,
+					nextDate    : epData && epData.airdate,
+					nextDateTime: epData && epData.airstamp,
+					nextURL     : epData && epData._links && epData._links.self && epData._links.self.href,
 					premiered   : showData.premiered,
 					status      : showData.status,
 					tvmaze      : showData.id,
-					url         : showData._links.self.href,
+					url         : showData && showData._links && showData._links.self && showData._links.self.href,
 					updated     : NOW,
-					weekday     : showData.schedule.days[0]
+					weekday     : showData.schedule && showData.schedule.days && showData.schedule.days[0]
 				})
 				.value()
 		}

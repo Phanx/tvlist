@@ -16,3 +16,10 @@
 - Add epguides.com links? (How to find?)
 
 - jQuery is only used for slideUp/slideDown. Overkill?
+
+- Tests
+
+- React Router
+
+- Split up controller vs display components,
+  eg. ShowEdit ---> (ShowEdit > ShowEditForm)

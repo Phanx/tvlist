@@ -1,9 +1,9 @@
 const React    = require("react")
 const ReactDOM = require("react-dom")
 
-const ShowListController = require("./components/ShowListController")
+const AppController = require("./components/AppController")
 
 ReactDOM.render(
-	<ShowListController />,
+	<AppController />,
 	document.getElementById("content")
 )

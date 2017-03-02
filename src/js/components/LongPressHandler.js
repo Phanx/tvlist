@@ -1,47 +1,47 @@
-import React from "react"
+import React, { PropTypes } from "react"
 
-const ignoredTagNames = [ "a", "button", "input", "label", "select", "textarea" ]
+const ignoredTagNames = ["a", "button", "input", "label", "select", "textarea"]
 
 const LongPressHandler = React.createClass({
 	propTypes: {
 		// Function to call when a longpress is triggered.
-		action: React.PropTypes.func.isRequired,
-
-		// React component or HTML tag name (default `div`).
-		component: React.PropTypes.oneOfType([
-			React.PropTypes.element,
-			React.PropTypes.func,
-			React.PropTypes.string
-		]),
+		action: PropTypes.func.isRequired,
 
 		// Mouse button to trigger the longpress action.
 		// May be 1 (middle button, default) or 2 (right button).
-		button: React.PropTypes.oneOf([1,2]),
+		button: PropTypes.oneOf([1,2]),
+
+		// React component or HTML tag name (default `div`).
+		component: PropTypes.oneOfType([
+			PropTypes.element,
+			PropTypes.string
+		]),
 
 		// String containing a list of lowercase modifier key name(s) to let
 		// left-click trigger the longpress action. Separators are optional.
 		// Examples: "shift" (default), "ctrl-shift", "shift alt", "altctrl".
-		modKeys: React.PropTypes.string,
+		modKeys: PropTypes.string,
 
 		// Trigger the longpress action with `<modKeys> + <button>` instead of
 		// with either `<button>` OR `<modKeys> + left-click`.
-		strict: React.PropTypes.bool,
+		strict: PropTypes.bool,
 
 		// Time in MS required to count as a longpress. Default 500.
-		timeout: React.PropTypes.number
+		timeout: PropTypes.number,
+
+		children: PropTypes.node
 	},
-	getDefaultProps: function() {
-		return {
-			button : 1, // middle button
-			modKeys: "shift",
-			timeout: 500
-		}
+
+	defaultProps: {
+		button : 1, // middle button
+		modKeys: "shift",
+		timeout: 500
 	},
 
 	render: function() {
 		const {
-			action, children, component,
-			button, modKeys, strict, timeout,
+			children, component,
+			action, button, modKeys, strict, timeout, // eslint-disable-line
 			...otherProps
 		} = this.props
 
@@ -99,6 +99,7 @@ const LongPressHandler = React.createClass({
 			}, this.props.timeout)
 		}
 	},
+
 	mouseUp: function(event) {
 		if (this.isIgnoredTarget(event.target)) {
 			return
@@ -108,9 +109,11 @@ const LongPressHandler = React.createClass({
 		}
 		this.longPressTimeout = window.clearTimeout(this.longPressTimeout)
 	},
+
 	triggerLongPress: function() {
 		this.props.action()
 	}
+
 })
 
-module.exports = LongPressHandler
+export default LongPressHandler

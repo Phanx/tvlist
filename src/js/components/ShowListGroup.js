@@ -8,7 +8,7 @@ const ShowListGroup = React.createClass({
 		name          : React.PropTypes.string.isRequired,
 		shows         : React.PropTypes.array.isRequired,
 		selected      : React.PropTypes.bool,
-		setExpandedDay: React.PropTypes.func,
+		setExpandedSection: React.PropTypes.func,
 		setShowToEdit : React.PropTypes.func
 	},
 	onClickHeader: function(event) {
@@ -17,7 +17,7 @@ const ShowListGroup = React.createClass({
 		if (this.props.selected) {
 			// This one is already expanded, just collapse it.
 			$(".content", group).slideUp(200, () => {
-				this.props.setExpandedDay && this.props.setExpandedDay()
+				this.props.setExpandedSection && this.props.setExpandedSection()
 			})
 		} else {
 			// This one isn't expanded yet, collapse all others and expand it.
@@ -25,7 +25,7 @@ const ShowListGroup = React.createClass({
 				$(".content", this).slideUp(200)
 			})
 			$(".content", group).slideDown(200, () => {
-				this.props.setExpandedDay && this.props.setExpandedDay(this.props.name)
+				this.props.setExpandedSection && this.props.setExpandedSection(this.props.name)
 			})
 		}
 	},

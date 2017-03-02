@@ -1,13 +1,11 @@
-var React = require("react")
+import React from "react"
 
-module.exports = React.createClass({
-	render: function() {
-		return (
-			<div className="loading-dots">
-				<span></span>
-				<span></span>
-				<span></span>
-			</div>
-		)
-	}
-})
+export default function LoadingDots() {
+	return (
+		<div className="loading-dots">
+			<span></span>
+			<span></span>
+			<span></span>
+		</div>
+	)
+}

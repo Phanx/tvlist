@@ -4,11 +4,11 @@ const ShowListGroup = require("./ShowListGroup")
 
 const ShowList = React.createClass({
 	propTypes: {
-		expandedDay   : React.PropTypes.string,
-		id            : React.PropTypes.string,
-		setExpandedDay: React.PropTypes.func.isRequired,
-		setShowToEdit : React.PropTypes.func.isRequired,
-		showData      : React.PropTypes.array.isRequired
+		expandedSection   : React.PropTypes.string,
+		id                : React.PropTypes.string,
+		setExpandedSection: React.PropTypes.func.isRequired,
+		setShowToEdit     : React.PropTypes.func.isRequired,
+		showData          : React.PropTypes.array.isRequired
 	},
 	onClickAddButton: function() {
 		this.props.setShowToEdit("ADD")
@@ -20,8 +20,8 @@ const ShowList = React.createClass({
 					key={day.name}
 					name={day.name}
 					shows={day.shows}
-					selected={day.name === this.props.expandedDay}
-					setExpandedDay={this.props.setExpandedDay}
+					selected={day.name === this.props.expandedSection}
+					setExpandedSection={this.props.setExpandedSection}
 					setShowToEdit={this.props.setShowToEdit} />
 			)
 		})

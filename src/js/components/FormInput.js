@@ -1,29 +1,35 @@
-const React = require("react")
+import React, { PropTypes } from "react"
 
-const FormInput = React.createClass({
-	propTypes: {
-		label   : React.PropTypes.string.isRequired,
-		name    : React.PropTypes.string.isRequired,
-		value   : React.PropTypes.oneOfType([
-						React.PropTypes.number,
-						React.PropTypes.string
-					]),
-		onChange: React.PropTypes.func.isRequired
-	},
-	render: function() {
-		return (
-			<div className="form-group form-primary">
-				<label htmlFor={"input-" + this.props.name}>{this.props.label}</label>
-				<input type={this.props.type || "text"}
-					id={"input-" + this.props.name}
-					name={this.props.name}
-					ref={this.props.name}
-					value={this.props.value}
-					onChange={this.props.onChange}
-					className="form-control" />
-			</div>
-		)
-	}
-})
+const propTypes = {
+	label   : PropTypes.string.isRequired,
+	name    : PropTypes.string.isRequired,
+	onChange: PropTypes.func.isRequired,
+	type    : PropTypes.string,
+	value   : PropTypes.oneOfType([
+					PropTypes.number,
+					PropTypes.string
+				])
+}
 
-module.exports = FormInput
+const FormInput = (props) => {
+	const { label, name, onChange, type, value } = props
+
+	return (
+		<div className="form-group form-primary">
+			<label htmlFor={"input-" + name}>
+				{label}
+			</label>
+			<input className="form-control"
+				id={"input-" + name}
+				type={type || "text"}
+				name={name}
+				onChange={onChange}
+				value={value}
+			/>
+		</div>
+	)
+}
+
+FormInput.propTypes = propTypes
+
+export default FormInput

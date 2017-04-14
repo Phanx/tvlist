@@ -2,15 +2,15 @@ const gulp = require("gulp")
 
 const config = {
 	dirs: {
-		dist : './app',
-		src  : './src'
+		dist : "./app",
+		src  : "./src"
 	},
 	babelify: {
-		presets    : [ "es2015", "react" ]
+		presets    : ["es2015", "react"]
 	},
 	browserify: {
 		debug      : true,
-		extensions : [ ".js", ".json", ".jsx" ]
+		extensions : [".js", ".json", ".jsx"]
 	},
 	uglifyify: {
 		global     : true
@@ -39,14 +39,14 @@ const runSequence = require("run-sequence")
 gulp.task("build", function(done) {
 	runSequence(
 		"clean",
-		[ "build-css", "build-js" ],
+		["build-css", "build-js"],
 	done)
 })
 
 gulp.task("watch", function(done) {
 	runSequence(
 		"clean",
-		[ "watch-css", "watch-js" ],
+		["watch-css", "watch-js"],
 	done)
 })
 
@@ -76,7 +76,7 @@ const cssnext      = require("postcss-cssnext")
 const csswring     = require("csswring")
 const postcss      = require("gulp-postcss")
 
-gulp.task("build-css", function(done) {
+gulp.task("build-css", function() {
 	return gulp.src([
 			"node_modules/normalize.css/normalize.css",
 			"node_modules/flexboxgrid/dist/flexboxgrid.css",
@@ -101,11 +101,9 @@ gulp.task("watch-css", ["build-css"], function() {
 
 const babelify   = require("babelify")
 const browserify = require("browserify")
-const buffer     = require("vinyl-buffer")
-// const exorcist  = require("exorcist")
-// const path      = require("path")
+// const buffer     = require("vinyl-buffer")
 const source     = require("vinyl-source-stream")
-const uglify     = require("gulp-uglify")
+// const uglify     = require("gulp-uglify")
 // const uglifyify  = require("uglifyify")
 const watchify   = require("watchify")
 
@@ -118,23 +116,23 @@ function bundle(src) {
 }
 
 gulp.task("build-js", function() {
-	var b = browserify(config.dirs.src + "/js/app.js", config.browserify)
+	const b = browserify(config.dirs.src + "/js/app.js", config.browserify)
 	b.transform(babelify, config.babelify)
 	//b.transform(uglifyify, config.uglifyify)
 	return bundle(b)
 })
 
 gulp.task("watch-js", function() {
-	var bw = watchify(browserify(config.dirs.src + "/js/app.js", Object.assign({}, watchify.args, config.browserify)))
+	function buildify(bw) {
+		return bundle(bw)
+	}
+
+	const bw = watchify(browserify(config.dirs.src + "/js/app.js", Object.assign({}, watchify.args, config.browserify)))
 		bw.transform(babelify, config.babelify)
 		//b.transform(uglifyify, config.uglifyify)
 		bw.on("update", buildify)
 		bw.on("error", console.log.bind(console))
 		bw.on("log", console.log.bind(console))
 
-	function buildify() {
-		return bundle(bw)
-	}
-
-	return buildify()
+	return buildify(bw)
 })

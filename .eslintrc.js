@@ -62,7 +62,7 @@ module.exports = {
 		"no-lonely-if": "warn",
 		"no-whitespace-before-property": "warn",
 		// "object-curly-newline": ["warn", { "multiline": true }],
-		"object-curly-spacing": ["warn", "always", { "arraysInObjects": false, "objectsInObjects": false }],
+		"object-curly-spacing": ["warn", "always", { "arraysInObjects": true, "objectsInObjects": false }],
 		"operator-linebreak": ["warn", "before"],
 		"quotes": ["warn", "double", { "allowTemplateLiterals": true, "avoidEscape": true }],
 		"semi": ["warn", "never"],

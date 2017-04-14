@@ -1,7 +1,7 @@
-const React = require("react")
-const $ = require("jquery")
+import React from "react"
+import utils from "../utils"
 
-const FormInput = require("./FormInput")
+import FormInput from "./FormInput"
 
 const ShowEdit = React.createClass({
 	propTypes: {
@@ -30,13 +30,13 @@ const ShowEdit = React.createClass({
 	handleChange: function(event) {
 		// console.log("handleChange", event.target.name, event.target.value)
 		const value = event.target.value
-		let newstate = {}
+		const newstate = {}
 		newstate[event.target.name] = (value.length > 0 && value.trim().length > 0) ? value : ""
 		this.setState(newstate)
 	},
 	handleSubmit: function(event) {
 		event.preventDefault()
-		let changes = {}
+		const changes = {}
 		Object.keys(this.state).forEach((key) => {
 			const oldValue = (this.props.item[key] || "").toString()
 			const newValue = (this.state[key] || "").toString()
@@ -49,20 +49,17 @@ const ShowEdit = React.createClass({
 			this.handleCancel(event)
 		} else {
 			console.log("handleSubmit", this.props.item.name, changes)
-			$.post({
-				url: "/api/editshow",
-				data: {
+			utils.postJSON("/api/editshow", {
 					name: this.props.item.name,
 					changes: changes
-				}
 			})
-			.done((data, textStatus, jqXHR) => {
+			.then((data) => {
 				// Pass back up the chain
 				console.log("submission succeeded:", this.props.item.name, data)
 				this.props.callback && this.props.callback("REFRESH")
 			})
-			.fail((jqXHR, textStatus, errorThrown) => {
-				console.log("submission failed:", this.props.item.name, textStatus, errorThrown)
+			.catch((err) => {
+				console.log("submission failed:", this.props.item.name, err)
 				this.handleCancel(event)
 			})
 		}
@@ -80,45 +77,49 @@ const ShowEdit = React.createClass({
 		if (this.state.canDelete) {
 			console.log("handleDelete", this.props.item.name)
 			// TODO: delete show
-			$.post({
-				url: "/api/deleteshow",
-				data: {
-					name: this.props.item.name
-				}
+			utils.postJSON("/api/deleteshow", {
+				name: this.props.item.name
 			})
-			.done((data, textStatus, jqXHR) => {
+			.then((data) => {
 				// Pass back up the chain
 				console.log("submission succeeded:", this.props.item.name, data)
 				this.props.callback && this.props.callback("REFRESH")
 			})
-			.fail((jqXHR, textStatus, errorThrown) => {
-				console.log("submission failed:", this.props.item.name, textStatus, errorThrown)
+			.catch((err) => {
+				console.log("submission failed:", this.props.item.name, err)
 				this.handleCancel(event)
 			})
 		}
 	},
 	render: function() {
+		console.log("render", FormInput)
 		return (
 			<section id="editor">
 				<h1>Edit Show</h1>
 
-				<form onSubmit={this.handleSubmit} onCancel={this.handleCancel}>
-					<FormInput label="Show Name" name="name"
+				<form onSubmit={this.handleSubmit}>
+					<FormInput label="Show Name"
+						name="name"
 						value={this.state.name}
 						onChange={this.handleChange} />
 
-					<FormInput label="Additional Search Keywords" name="pref"
+					<FormInput label="Additional Search Keywords"
+						name="pref"
 						value={this.state.pref}
 						onChange={this.handleChange} />
 
 					<div className="row">
 						<div className="col-xs">
-							<FormInput label="IMDb ID" name="imdb"
+							<FormInput label="IMDb ID"
+								name="imdb"
+								pattern="tt[0-9]+"
 								value={this.state.imdb}
 								onChange={this.handleChange} />
 						</div>
 						<div className="col-xs">
-							<FormInput label="TVMaze ID" name="tvmaze"
+							<FormInput label="TVMaze ID"
+								name="tvmaze"
+								pattern="[0-9]+"
 								value={this.state.tvmaze}
 								onChange={this.handleChange} />
 						</div>
@@ -155,4 +156,4 @@ const ShowEdit = React.createClass({
 	}
 })
 
-module.exports = ShowEdit
+export default ShowEdit

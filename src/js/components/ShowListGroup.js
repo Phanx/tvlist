@@ -1,18 +1,18 @@
-const React = require("react")
-const $ = require("jquery")
+import React, { PropTypes } from "react"
+import $ from "jquery"
 
-const ShowListItem = require("./ShowListItem")
+import ShowListItem from "./ShowListItem"
 
 const ShowListGroup = React.createClass({
 	propTypes: {
-		name          : React.PropTypes.string.isRequired,
-		shows         : React.PropTypes.array.isRequired,
-		selected      : React.PropTypes.bool,
-		setExpandedSection: React.PropTypes.func,
-		setShowToEdit : React.PropTypes.func
+		name          : PropTypes.string.isRequired,
+		shows         : PropTypes.array.isRequired,
+		selected      : PropTypes.bool,
+		setExpandedSection: PropTypes.func,
+		setShowToEdit : PropTypes.func
 	},
 	onClickHeader: function(event) {
-		var group = event.target.parentNode
+		const group = event.target.parentNode
 		// TODO: replace with react css transition group
 		if (this.props.selected) {
 			// This one is already expanded, just collapse it.
@@ -30,10 +30,10 @@ const ShowListGroup = React.createClass({
 		}
 	},
 	render: function() {
-		let id = this.props.name.toLowerCase()
-		let empty = this.props.shows.length === 0
-		let contentStyle = (empty || !this.props.selected) ? { display: "none" } : null
-		let showListItems = $.map(this.props.shows, (show, index) => {
+		const id = this.props.name.toLowerCase()
+		const empty = this.props.shows.length === 0
+		const contentStyle = (empty || !this.props.selected) ? { display: "none" } : null
+		const showListItems = this.props.shows.map((show) => {
 			return (
 				<ShowListItem item={show} key={show.name} setShowToEdit={this.props.setShowToEdit} />
 			)
@@ -71,4 +71,4 @@ const ShowListGroup = React.createClass({
 	}
 })
 
-module.exports = ShowListGroup
+export default ShowListGroup

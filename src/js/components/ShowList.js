@@ -1,6 +1,6 @@
-const React = require("react")
+import React from "react"
 
-const ShowListGroup = require("./ShowListGroup")
+import ShowListGroup from "./ShowListGroup"
 
 const ShowList = React.createClass({
 	propTypes: {
@@ -34,4 +34,4 @@ const ShowList = React.createClass({
 	}
 })
 
-module.exports = ShowList
+export default ShowList

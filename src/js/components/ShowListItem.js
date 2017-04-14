@@ -1,19 +1,19 @@
-const React  = require("react")
+import React, { PropTypes } from "react"
 
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
 
 const ShowListItem = React.createClass({
 	propTypes: {
-		item: React.PropTypes.shape({
-			name	 : React.PropTypes.string.isRequired,
-			nextDate : React.PropTypes.string,
-			premiered: React.PropTypes.string,
-			status   : React.PropTypes.string,
-			pref	 : React.PropTypes.string,
-			imdb	 : React.PropTypes.string,
-			tvmaze   : React.PropTypes.number
+		item: PropTypes.shape({
+			name     : PropTypes.string.isRequired,
+			nextDate : PropTypes.string,
+			premiered: PropTypes.string,
+			status   : PropTypes.string,
+			pref     : PropTypes.string,
+			imdb     : PropTypes.string,
+			tvmaze   : PropTypes.number
 		}).isRequired,
-		setShowToEdit: React.PropTypes.func
+		setShowToEdit: PropTypes.func
 	},
 	handleMouseDown: function(event) {
 		if (event.target.tagName === "a") {
@@ -41,7 +41,7 @@ const ShowListItem = React.createClass({
 		this.props.setShowToEdit && this.props.setShowToEdit(this.props.item)
 	},
 	render: function() {
-		let show = this.props.item
+		const show = this.props.item
 		let classList = "show"
 
 		let title = show.name
@@ -54,8 +54,8 @@ const ShowListItem = React.createClass({
 		if (show.daysToNext === 0) {
 			//statusText = <p className="status">Today</p>
 		} else if (show.nextDate) {
-			let nextDate = new Date(show.nextDate)
-			let nextDateText = MONTHS[nextDate.getUTCMonth()] + " " + nextDate.getUTCDate()
+			const nextDate = new Date(show.nextDate)
+			const nextDateText = MONTHS[nextDate.getUTCMonth()] + " " + nextDate.getUTCDate()
 			if (show.daysToNext <= 7) {
 				statusText = (
 					<p className="status">
@@ -67,7 +67,7 @@ const ShowListItem = React.createClass({
 				classList += " afk"
 				statusText = (
 					<p className="status">
-						<span className="visuallyhidden">{show.nextDate == show.premiered ? "Starts" : "Returns"}</span>
+						<span className="visuallyhidden">{show.nextDate === show.premiered ? "Starts" : "Returns"}</span>
 						<date dateTime={nextDate.toISOString()}>{nextDateText}</date>
 					</p>
 				)
@@ -78,10 +78,10 @@ const ShowListItem = React.createClass({
 		}
 
 
-		let showNameForURL = encodeURIComponent(show.name.toLowerCase().replace(/[^\w\s]/g, " ").replace(/\s\s+/g, " "))
-		let prefQuery = show.pref ? " " + show.pref : ""
+		const showNameForURL = encodeURIComponent(show.name.toLowerCase().replace(/[^\w\s]/g, " ").replace(/\s\s+/g, " "))
+		const prefQuery = show.pref ? " " + show.pref : ""
 
-		let links = []
+		const links = []
 
 		if (show.imdb) {
 			links.push(<li key="imdb"><a className="dl-imdb" href={"http://www.imdb.com/title/" + show.imdb}>IMDb</a></li>)
@@ -99,7 +99,7 @@ const ShowListItem = React.createClass({
 
 		return (
 			<article className={"col-xs-4 col-sm-3 col-md-2 col-lg-1 " + classList}
-				 onMouseDown={this.handleMouseDown} onMouseUp={this.handleMouseUp}>
+				onMouseDown={this.handleMouseDown} onMouseUp={this.handleMouseUp}>
 				<h2 className="title">
 					{title}
 				</h2>
@@ -112,4 +112,4 @@ const ShowListItem = React.createClass({
 	}
 })
 
-module.exports = ShowListItem
+export default ShowListItem

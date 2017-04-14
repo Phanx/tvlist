@@ -11,17 +11,21 @@ const propTypes = {
 				])
 }
 
-const FormInput = (props) => {
-	const { label, name, onChange, type, value } = props
+const defaultProps = {
+	type: "text"
+}
 
+const FormInput = (props) => {
+	const { name, label, type, onChange, value, ...otherProps } = props
 	return (
 		<div className="form-group form-primary">
 			<label htmlFor={"input-" + name}>
 				{label}
 			</label>
-			<input className="form-control"
+			<input {...otherProps}
+				className="form-control"
 				id={"input-" + name}
-				type={type || "text"}
+				type={type}
 				name={name}
 				onChange={onChange}
 				value={value}
@@ -30,6 +34,7 @@ const FormInput = (props) => {
 	)
 }
 
+FormInput.defaultProps = defaultProps
 FormInput.propTypes = propTypes
 
 export default FormInput

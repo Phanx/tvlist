@@ -1,9 +1,11 @@
-import React, { PropTypes } from "react"
+import React from "react"
+import createReactClass from "create-react-class"
+import PropTypes from "prop-types"
 import $ from "jquery"
 
 import ShowListItem from "./ShowListItem"
 
-const ShowListGroup = React.createClass({
+const ShowListGroup = createReactClass({
 	propTypes: {
 		name          : PropTypes.string.isRequired,
 		shows         : PropTypes.array.isRequired,

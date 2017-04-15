@@ -1,11 +1,12 @@
 {
+	"app": {
+		"updated": 0
+	},
 	"shows": [
-		{ "name": "The Blacklist" },
 		{ "name": "Bosch" },
-		{ "name": "Chicago PD" },
 		{ "name": "Daredevil" },
-		{ "name": "Hawaii Five-0" },
-		{ "name": "Law and Order SVU" },
-		{ "name": "The Punisher" }
+		{ "name": "Legion" },
+		{ "name": "Shooter" },
+		{ "name": "Westworld" }
 	]
 }

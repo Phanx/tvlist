@@ -1,8 +1,10 @@
-import React, { PropTypes } from "react"
+import React from "react"
+import createReactClass from "create-react-class"
+import PropTypes from "prop-types"
 
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
 
-const ShowListItem = React.createClass({
+const ShowListItem = createReactClass({
 	propTypes: {
 		item: PropTypes.shape({
 			name     : PropTypes.string.isRequired,
@@ -11,7 +13,7 @@ const ShowListItem = React.createClass({
 			status   : PropTypes.string,
 			pref     : PropTypes.string,
 			imdb     : PropTypes.string,
-			tvmaze   : PropTypes.number
+			tvmaze   : PropTypes.string,
 		}).isRequired,
 		setShowToEdit: PropTypes.func
 	},

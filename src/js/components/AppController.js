@@ -1,4 +1,5 @@
 import React from "react"
+import createReactClass from "create-react-class"
 
 import LoadingDots from "./LoadingDots"
 import ShowAdd  from "./ShowAdd"
@@ -19,7 +20,7 @@ const TODAY = new Date(TODAYSTRING)
 const ONEDAY = 1000 * 60 * 60 * 24
 const WEEKDAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
 
-const ShowListController = React.createClass({
+const ShowListController = createReactClass({
 	getInitialState: function() {
 		const currentDate = new Date()
 		let initialDay = currentDate.getDay()
@@ -67,58 +68,54 @@ const ShowListController = React.createClass({
 	},
 	fetchShowData: function() {
 		console.log("Fetching show list...")
-		const req = new XMLHttpRequest()
-		req.open("GET", "/api/shows" + window.location.search, true)
-		req.onload = () => {
-			if (req.status === 200) {
-				const responseData = JSON.parse(req.responseText)
-				console.log("Show list received with", responseData.length, "shows.")
+		fetch("/api/shows" + window.location.search)
+		.then(res => {
+			if (res.status === 200) return res.json()
+		})
+		.then(data => {
+			if (!data || !data.shows) return console.log("Error fetching show list!")
 
-				const shows = []
-				for (let i = 0; i < SECTIONS.length; i++) {
-					shows.push({
-						name: SECTIONS[i],
-						shows: []
-					})
+			const responseData = data.shows
+			console.log("Show list received with", responseData.length, "shows.")
+
+			const shows = []
+			SECTIONS.map(title => {
+				shows.push({
+					name: title,
+					shows: []
+				})
+			})
+
+			responseData.sort(this.sortShows).forEach(function(show) {
+				let i = SECTIONS.indexOf(show.weekday || "Future")
+				if (show.status === "Ended") {
+					i = SECTIONS.indexOf("Ended")
+				} else if (i === -1 || !show.nextDate || show.status === "To Be Determined") {
+					i = SECTIONS.indexOf("Future")
 				}
 
-				responseData.sort(this.sortShows)
-				responseData.forEach(function(show) {
-					let i = SECTIONS.indexOf(show.weekday || "Future")
-					if (show.status === "Ended") {
-						i = SECTIONS.indexOf("Ended")
-					} else if (i === -1 || !show.nextDate || show.status === "To Be Determined") {
+				if (show.nextDate) {
+					const nextDate = new Date(show.nextDate)
+					show.daysToNext = Math.floor((nextDate - TODAY) / ONEDAY)
+					if (show.daysToNext > 30) {
 						i = SECTIONS.indexOf("Future")
 					}
-
-					if (show.nextDate) {
-						const nextDate = new Date(show.nextDate)
-						show.daysToNext = Math.floor((nextDate - TODAY) / ONEDAY)
-						if (show.daysToNext > 30) {
-							i = SECTIONS.indexOf("Future")
-						}
-					}
-
-					shows[i].shows.push(show)
-				})
-
-				// Iterate over non-day groups, starting at the end and working backward.
-				for (let i = SECTIONS.length - 1; i > (WEEKDAYS.length - 1); i--) {
-					// Remove empty non-day data groups.
-					if (shows[i].shows.length === 0) {
-						shows.splice(i, 1)
-					}
 				}
 
-				this.setState({ shows: shows })
-			} else {
-				// server returned an error :(
+				shows[i].shows.push(show)
+			})
+
+			// Iterate over non-day groups, starting at the end and working backward.
+			for (let i = SECTIONS.length - 1; i > (WEEKDAYS.length - 1); i--) {
+				// Remove empty non-day data groups.
+				if (shows[i].shows.length === 0) {
+					shows.splice(i, 1)
+				}
 			}
-		}
-		req.onerror = () => {
-			// connection error :(
-		}
-		req.send()
+
+			this.setState({ shows: shows })
+		})
+		.catch(err => console.log(err))
 	},
 	setExpandedSection: function(day) {
 		this.setState({ expandedSection: day })

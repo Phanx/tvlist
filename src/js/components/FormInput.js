@@ -1,14 +1,12 @@
-import React, { PropTypes } from "react"
+import React from "react"
+import PropTypes from "prop-types"
 
 const propTypes = {
 	label   : PropTypes.string.isRequired,
 	name    : PropTypes.string.isRequired,
 	onChange: PropTypes.func.isRequired,
 	type    : PropTypes.string,
-	value   : PropTypes.oneOfType([
-					PropTypes.number,
-					PropTypes.string
-				])
+	value   : PropTypes.oneOfType([PropTypes.number, PropTypes.string])
 }
 
 const defaultProps = {

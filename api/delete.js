@@ -1,18 +1,16 @@
-"use strict"
-
 const router = require("express").Router()
-const shows  = require("./db").get("shows")
+const db = require("./db")
 
-// Delete a show
 router.post("/", (req, res) => {
 	const name = req.body.name
-	if (typeof(name) === "undefined") {
-		return res.status(400).json({ error: "Show name not specified." })
+
+	if (typeof name !== "string") {
+		return res.status(400).json({ error: "Show name must be a string." })
 	}
-	// console.log("Received request to delete show: " + name)
-	shows.remove({ name: name }).value()
+
+	console.log("Received request to delete show:", name)
+	db.get("shows").remove({ name: name }).write()
 	return res.status(200).json({ message: "Show deleted." })
 })
 
 module.exports = router
-

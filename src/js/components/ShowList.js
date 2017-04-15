@@ -1,14 +1,16 @@
 import React from "react"
+import createReactClass from "create-react-class"
+import PropTypes from "prop-types"
 
 import ShowListGroup from "./ShowListGroup"
 
-const ShowList = React.createClass({
+const ShowList = createReactClass({
 	propTypes: {
-		expandedSection   : React.PropTypes.string,
-		id                : React.PropTypes.string,
-		setExpandedSection: React.PropTypes.func.isRequired,
-		setShowToEdit     : React.PropTypes.func.isRequired,
-		showData          : React.PropTypes.array.isRequired
+		expandedSection   : PropTypes.string,
+		id                : PropTypes.string,
+		setExpandedSection: PropTypes.func.isRequired,
+		setShowToEdit     : PropTypes.func.isRequired,
+		showData          : PropTypes.array.isRequired
 	},
 	onClickAddButton: function() {
 		this.props.setShowToEdit("ADD")

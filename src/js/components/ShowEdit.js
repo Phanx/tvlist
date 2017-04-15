@@ -1,18 +1,20 @@
 import React from "react"
-import utils from "../utils"
+import createReactClass from "create-react-class"
+import PropTypes from "prop-types"
 
+import utils from "../utils"
 import FormInput from "./FormInput"
 
-const ShowEdit = React.createClass({
+const ShowEdit = createReactClass({
 	propTypes: {
-		callback: React.PropTypes.func,
-		item: React.PropTypes.shape({
-			name  : React.PropTypes.string.isRequired,
-			pref  : React.PropTypes.string,
-			imdb  : React.PropTypes.string,
-			tvmaze: React.PropTypes.oneOfType([
-						React.PropTypes.number,
-						React.PropTypes.string
+		callback: PropTypes.func,
+		item: PropTypes.shape({
+			name  : PropTypes.string.isRequired,
+			pref  : PropTypes.string,
+			imdb  : PropTypes.string,
+			tvmaze: PropTypes.oneOfType([
+						PropTypes.number,
+						PropTypes.string
 					])
 		}).isRequired
 	},

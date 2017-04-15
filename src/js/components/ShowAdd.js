@@ -1,10 +1,12 @@
 import React from "react"
+import createReactClass from "create-react-class"
+import PropTypes from "prop-types"
 
 import FormInput from "./FormInput"
 
-const ShowAdd = React.createClass({
+const ShowAdd = createReactClass({
 	propTypes: {
-		callback: React.PropTypes.func
+		callback: PropTypes.func
 	},
 
 	getInitialState: function() {

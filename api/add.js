@@ -1,39 +1,38 @@
-"use strict"
-
 const router = require("express").Router()
-const shows = require("./db").get("shows")
+const tvMaze = require("./utils/tvmaze")
+const db = require("./db")
 
-function addShow(req, res, name) {
-	// console.log("Received request to add show:", name)
-	if (typeof(name) === "string") {
-		const found = shows.find({ name: name }).value()
-		if (!found) {
-			shows.push({ name: name }).value()
-			// TODO: fetch data for it now
-			return res.status(200).json({
-				message: "Show added!",
-				show: found
-			})
-		} else {
-			return res.status(409).json({
-				error: "Show already added.",
-				show: found
-			})
-		}
-	} else {
-		return res.status(400).json({
-			error: "Show name not specified."
-		})
+function addShow(data, res) {
+	const name = data.name
+	if (typeof name !== "string") {
+		return res.status(400).json({ error: "Show name must be a string." })
 	}
+
+	console.log(" ")
+	console.log("Add show:", name)
+
+	const found = db.get("shows").find({ name: name }).value()
+	if (found) {
+		return res.status(409).json({ error: "Show already tracked." })
+	}
+
+	tvMaze.getShowByName(name, (show) => {
+		if (show) {
+			show.name = name
+			db.get("shows").push(show).write()
+			return res.status(200).json({ show: show })
+		} else {
+			return res.status(404).json({ error: "Show not found on TVmaze." })
+		}
+	})
 }
 
 router.get("/", (req, res) => {
-	addShow(req, res, req.query.name)
+	addShow(req.query, res)
 })
 
 router.post("/", (req, res) => {
-	addShow(req, res, req.body.name)
+	addShow(req.body, res)
 })
 
 module.exports = router
-

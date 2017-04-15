@@ -1,8 +1,10 @@
-import React, { PropTypes } from "react"
+import React from "react"
+import PropTypes from "prop-types"
+import createReactClass from "create-react-class"
 
 const ignoredTagNames = ["a", "button", "input", "label", "select", "textarea"]
 
-const LongPressHandler = React.createClass({
+const LongPressHandler = createReactClass({
 	propTypes: {
 		// Function to call when a longpress is triggered.
 		action: PropTypes.func.isRequired,
